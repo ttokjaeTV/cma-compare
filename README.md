@@ -45,4 +45,4 @@
 
 ---
 
-[똑재TV 유튜브](https://www.youtube.com/@ttok_jae) · [네이버 카페](https://cafe.naver.com/ttokjae)
+[똑재TV 유튜브](https://www.youtube.com/@ttok_jae) · [평생 ETF 투자 카페](https://cafe.naver.com/ttokjae)

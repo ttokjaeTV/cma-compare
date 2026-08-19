@@ -1,0 +1,76 @@
+{
+  "targets": [
+    {
+      "id": "bok_base_rate",
+      "label": "한국은행 기준금리",
+      "tier": 1,
+      "url": "https://www.bok.or.kr/portal/singl/baseRate/list.do?dataSeCd=01&menuNo=200643",
+      "mode": "first"
+    },
+    {
+      "id": "yuanta",
+      "label": "유안타증권 금리 데이터",
+      "tier": 1,
+      "url": "https://www.myasset.com/myasset/code/prodRate.tbl",
+      "encoding": "euc-kr"
+    },
+    {
+      "id": "sk",
+      "label": "SK증권 CMA 금리 API",
+      "tier": 2,
+      "url": "https://www.sks.co.kr/main/product/rp/MAGIC_CMA_DATA_Q.cmd"
+    },
+    {
+      "id": "db",
+      "label": "DB증권 CMA 금리 API",
+      "tier": 2,
+      "url": "https://www.dbsec.co.kr/online/accservice/getCMAInterestRate.do",
+      "method": "POST"
+    },
+    {
+      "id": "hana",
+      "label": "하나증권 CMA",
+      "tier": 1,
+      "url": "https://www.hanaw.com/main/finance/CMA/FP_040101_P.cmd"
+    },
+    {
+      "id": "daishin",
+      "label": "대신증권 CMA",
+      "tier": 2,
+      "url": "https://www.daishin.com/g.ds?p=909&v=592"
+    },
+    {
+      "id": "ibk",
+      "label": "IBK투자증권 CMA 금리",
+      "tier": 2,
+      "url": "https://www.ibks.com/fundproduct/cma/cmaservice_Rate.do",
+      "encoding": "euc-kr"
+    },
+    {
+      "id": "sangsangin",
+      "label": "상상인증권 CMA",
+      "tier": 2,
+      "url": "https://www.sangsanginib.com/info/cmaView"
+    },
+    {
+      "id": "wooriib_woncma",
+      "label": "우리투자증권 우리WON CMA Note (종금형)",
+      "tier": 2,
+      "url": "https://securities.wooriib.com/HPKOFngoAction.do?method=hpwoncmanoteinf&BOARD_ID=38",
+      "legacyTls": true
+    },
+    {
+      "id": "wooriib_cmanote",
+      "label": "우리투자증권 CMA Note (종금형)",
+      "tier": 2,
+      "url": "https://securities.wooriib.com/HPKOFngoAction.do?method=hpcmanoteinf&BOARD_ID=11&BOARD_ID2=12",
+      "legacyTls": true
+    },
+    {
+      "id": "shinhan",
+      "label": "신한투자증권 CMA",
+      "tier": 2,
+      "url": "https://www.shinhansec.com/siw/wealth-management/cma/info/view.do"
+    }
+  ]
+}

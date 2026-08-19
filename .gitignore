@@ -3,8 +3,11 @@ data/
 갱신가이드.md
 references/
 archive/
+
+# JSON은 기본 제외하되, 감시 워커가 쓰는 파일은 예외
 *.json
-!package.json
+!watch/targets.json
+!watch/baseline.json
 
 # OS
 .DS_Store

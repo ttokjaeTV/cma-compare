@@ -1,0 +1,12 @@
+# 조사 원본·노하우는 공개하지 않는다 (로컬에만 보관)
+data/
+갱신가이드.md
+references/
+archive/
+*.json
+!package.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>증권사 CMA 금리 비교 (2026-08-19 기준) | 똑재TV</title>
+<meta name="description" content="증권사 24곳 CMA 금리를 RP형·발행어음형·MMW형·MMF형·종금형 전 유형으로 비교. 금리에 붙은 금액 한도와 예금자보호 여부까지 공식 고시 기준으로 정리했습니다.">
+<meta name="author" content="똑재TV">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://ttokjaetv.github.io/cma-compare/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="똑재TV">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://ttokjaetv.github.io/cma-compare/">
+<meta property="og:title" content="증권사 CMA 금리 비교 — 전 유형 (2026-08-19 기준)">
+<meta property="og:description" content="RP형·발행어음형·MMW형·MMF형·종금형까지 24개사 전수 비교. 금액 한도가 붙은 금리와 예금자보호 여부를 함께 표기했습니다.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#F5EFE6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 64 64\'%3E%3Crect width=\'64\' height=\'64\' rx=\'14\' fill=\'%233A2F26\'/%3E%3Ctext x=\'32\' y=\'45\' font-size=\'38\' font-weight=\'900\' text-anchor=\'middle\' fill=\'%23FBF7F0\' font-family=\'sans-serif\'%3E%EB%98%91%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+:root{
+  --bg:#F5EFE6; --bg-alt:#EFE7DA; --white:#FBF7F0;
+  --ink:#1A1A1A; --ink-soft:#4A4A4A; --ink-mute:#8B8276;
+  --accent:#D9542B; --accent-soft:#F4D5C4;
+  --border:#E5DCC8; --brown:#8B6F47; --dark-warm:#3A2F26; --green:#4A5A4A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); font-weight:600;
+  line-height:1.65; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+
+/* 헤더 */
+.logo-bar{display:flex;align-items:center;gap:12px;padding:26px 0 22px}
+.logo-box{
+  width:44px;height:44px;background:var(--dark-warm);color:var(--white);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;flex-shrink:0;
+}
+.logo-name{font-size:19px;font-weight:900;letter-spacing:-.5px}
+.logo-label{
+  font-size:12px;font-weight:800;color:var(--brown);background:var(--accent-soft);
+  padding:4px 11px;border-radius:99px;margin-left:2px;
+}
+
+/* 히어로 */
+.hero{
+  background:var(--white);border:1px solid var(--border);border-radius:20px;
+  padding:38px 34px;margin-bottom:18px;
+}
+.hero h1{font-size:34px;font-weight:900;letter-spacing:-1.2px;line-height:1.28;margin-bottom:14px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p{font-size:16px;color:var(--ink-soft);max-width:820px}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.badge{
+  font-size:13px;font-weight:800;padding:7px 14px;border-radius:99px;
+  background:var(--bg-alt);color:var(--brown);border:1px solid var(--border);
+}
+.badge.hot{background:var(--accent);color:var(--white);border-color:var(--accent)}
+.badge.warn{background:#FFF3E0;color:#B45309;border-color:#F0C89A}
+
+/* 범위 박스 */
+.scope{
+  background:var(--white);border:2px solid var(--accent);border-radius:20px;
+  padding:26px 30px;margin-bottom:18px;
+}
+.scope h3{font-size:17px;font-weight:900;margin-bottom:16px;color:var(--accent)}
+.scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.scope-col h4{font-size:14px;font-weight:900;margin-bottom:9px}
+.scope-col ul{list-style:none;font-size:14.5px;color:var(--ink-soft)}
+.scope-col li{padding:4px 0 4px 18px;position:relative}
+.scope-col li::before{content:'·';position:absolute;left:5px;font-weight:900;color:var(--brown)}
+.scope-yes h4{color:var(--green)}
+.scope-no h4{color:var(--accent)}
+
+/* CTA */
+.cta{display:flex;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.cta a{
+  flex:1;min-width:200px;text-align:center;text-decoration:none;
+  padding:16px;border-radius:16px;font-size:15px;font-weight:800;
+  border:1px solid var(--border);transition:.15s;
+}
+.cta a.yt{background:var(--accent);color:var(--white);border-color:var(--accent)}
+.cta a.cafe{background:var(--white);color:var(--dark-warm)}
+.cta a:hover{transform:translateY(-2px)}
+
+/* 목차 + 검색 */
+.nav{
+  position:sticky;top:0;z-index:50;background:var(--bg);
+  padding:14px 0;margin-bottom:18px;border-bottom:1px solid var(--border);
+}
+.nav-inner{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nav a{
+  text-decoration:none;font-size:13.5px;font-weight:800;color:var(--ink-soft);
+  padding:8px 13px;border-radius:99px;background:var(--white);border:1px solid var(--border);
+}
+.nav a:hover{background:var(--accent-soft);color:var(--dark-warm)}
+#search{
+  flex:1;min-width:200px;padding:11px 16px;border-radius:99px;
+  border:1px solid var(--border);background:var(--white);
+  font-family:inherit;font-size:14px;font-weight:600;color:var(--ink);
+}
+#search:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+
+/* 섹션 */
+section{margin-bottom:40px;scroll-margin-top:80px}
+section h2{
+  font-size:24px;font-weight:900;letter-spacing:-.8px;margin-bottom:8px;
+  display:flex;align-items:center;gap:10px;
+}
+section h2 span{
+  font-size:12px;font-weight:800;background:var(--dark-warm);color:var(--white);
+  padding:4px 10px;border-radius:8px;letter-spacing:0;
+}
+section > p.desc{font-size:15px;color:var(--ink-soft);margin-bottom:18px;max-width:900px}
+
+/* 표 */
+.table-wrap{
+  overflow-x:auto;background:var(--white);border:1px solid var(--border);
+  border-radius:20px;padding:6px;
+}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:700px;table-layout:fixed}
+th,td{padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);word-break:keep-all}
+td{line-height:1.45;vertical-align:top}
+thead th{
+  background:var(--bg-alt);font-weight:900;font-size:13px;color:var(--dark-warm);
+  white-space:nowrap;position:relative;vertical-align:middle;
+}
+thead th.sortable{cursor:pointer;user-select:none}
+thead th.sortable:hover{background:var(--accent-soft)}
+thead th.active{background:var(--dark-warm);color:var(--white)}
+thead th:first-child{border-radius:14px 0 0 0}
+thead th:last-child{border-radius:0 14px 0 0}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--bg-alt)}
+td.name{font-weight:900;white-space:nowrap}
+td.num{font-variant-numeric:tabular-nums;font-weight:900;white-space:nowrap}
+td.num .big{font-size:16.5px}
+.sub{display:block;font-size:11.5px;font-weight:600;color:var(--ink-mute);margin-top:2px;line-height:1.4}
+.dash{color:var(--ink-mute);font-weight:600}
+
+/* 칩 */
+.chip{
+  display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;
+  border-radius:99px;white-space:nowrap;
+}
+.c-yes{background:#E4EFE4;color:#33562F}
+.c-no{background:var(--bg-alt);color:var(--ink-mute)}
+.c-need{background:#FFF3E0;color:#B45309}
+.c-cap{background:var(--accent-soft);color:#9C3A16}
+.c-prot{background:#DCE9F5;color:#1F4E79}
+.c-unprot{background:var(--bg-alt);color:var(--ink-mute)}
+.c-band{background:#EDE4F3;color:#5B3A75}
+.legend{
+  display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;
+  font-size:12.5px;color:var(--ink-mute);font-weight:600;
+}
+
+/* 인사이트 */
+.insight{
+  background:var(--dark-warm);color:var(--white);border-radius:20px;
+  padding:30px 34px;margin:26px 0;
+}
+.insight .tag{
+  font-size:11px;font-weight:900;letter-spacing:1.5px;color:var(--accent-soft);
+  margin-bottom:12px;display:block;
+}
+.insight h3{font-size:20px;font-weight:900;margin-bottom:14px;letter-spacing:-.5px}
+.insight p{font-size:15px;color:#E8E0D4;margin-bottom:11px}
+.insight p:last-child{margin-bottom:0}
+.insight strong{color:#FFD3B8}
+
+/* 노트 박스 */
+.note{
+  background:var(--white);border:1px solid var(--border);border-left:4px solid var(--brown);
+  border-radius:12px;padding:18px 22px;margin-top:16px;font-size:14px;color:var(--ink-soft);
+}
+.note strong{color:var(--ink)}
+.note.alert{border-left-color:var(--accent)}
+.note ul{margin:8px 0 0 18px}
+.note li{margin-bottom:5px}
+
+/* 출처 박스 */
+.src{
+  background:var(--bg-alt);border:1px solid var(--border);border-radius:20px;
+  padding:28px 32px;margin-top:34px;font-size:13.5px;color:var(--ink-soft);
+}
+.src h3{font-size:16px;font-weight:900;color:var(--ink);margin-bottom:14px}
+.src h4{font-size:14px;font-weight:900;color:var(--dark-warm);margin:18px 0 8px}
+.src ul{margin-left:18px}
+.src li{margin-bottom:6px}
+.src a{color:var(--brown);word-break:break-all}
+
+footer{
+  margin-top:40px;padding-top:26px;border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--ink-mute);line-height:1.8;
+}
+
+@media (max-width:768px){
+  .wrap{padding:0 14px 60px}
+  .hero{padding:26px 20px}
+  .hero h1{font-size:25px}
+  .scope{padding:20px 18px}
+  .scope-grid{grid-template-columns:1fr;gap:16px}
+  section h2{font-size:20px}
+  .insight{padding:24px 20px}
+  .insight h3{font-size:17px}
+  .src{padding:22px 18px}
+  .table-wrap{margin:0 -14px;border-radius:0;border-left:none;border-right:none}
+  table{font-size:13px}
+  th,td{padding:11px 9px}
+  .nav-inner{gap:7px}
+  #search{order:-1;flex-basis:100%}
+  .nav a{font-size:12.5px;padding:7px 11px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="logo-bar">
+  <div class="logo-box">똑</div>
+  <div class="logo-name">똑재TV</div>
+  <div class="logo-label">비교 도구</div>
+</div>
+
+<div class="hero">
+  <h1>증권사 CMA 금리 비교<br><em>RP형 · 발행어음형 · MMW형 · MMF형 · 종금형 전 유형</em></h1>
+  <p>같은 CMA라도 유형이 다르면 다른 상품입니다. 확정금리인지 실적배당인지, 예금자보호가 되는지, 표시된 금리에 <strong>금액 한도</strong>가 붙어 있는지가 전부 다릅니다. 24개 증권사의 공식 고시를 유형별로 전수 정리했습니다.</p>
+  <div class="badge-row">
+    <span class="badge hot">데이터 확인일 2026-08-19</span>
+    <span class="badge">조사 대상 24개사 · CMA 취급 20개사</span>
+    <span class="badge">기준금리 2.75% (2026-07-16 인상)</span>
+    <span class="badge warn">⚠ 다음 금통위 2026-08-27 — 이후 재확인 필요</span>
+  </div>
+</div>
+
+<div class="scope">
+  <h3>이 표의 범위</h3>
+  <div class="scope-grid">
+    <div class="scope-col scope-yes">
+      <h4>다루는 것</h4>
+      <ul>
+        <li>지금 새로 개설하는 <strong>개인</strong> CMA 계좌</li>
+        <li>세전 연이율, 기본금리 기준</li>
+        <li>각 사 공식 고시·공지에서 직접 확인한 값</li>
+        <li>우대금리는 <strong>적용 한도 금액을 함께</strong> 표기</li>
+      </ul>
+    </div>
+    <div class="scope-col scope-no">
+      <h4>다루지 않는 것</h4>
+      <ul>
+        <li><strong>이미 보유 중인 계좌의 실제 적용 금리</strong> — 매수 시점 금리로 고정되는 구조가 많아 별도 확인 필요</li>
+        <li>법인 계좌 (일부만 참고 표기)</li>
+        <li>세금 계산 (이자소득세 15.4% 미반영)</li>
+        <li>외화 RP·외화 CMA</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="cta">
+  <a class="yt" href="https://www.youtube.com/@ttok_jae" target="_blank" rel="noopener">📺 똑재TV 유튜브</a>
+  <a class="cafe" href="https://cafe.naver.com/ttokjae" target="_blank" rel="noopener">💬 네이버 카페</a>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <input id="search" type="text" placeholder="증권사명 검색 (예: 미래에셋)" autocomplete="off">
+    <a href="#types">유형 이해</a>
+    <a href="#main">종합표</a>
+    <a href="#rp">RP형</a>
+    <a href="#bill">발행어음형</a>
+    <a href="#mmw">MMW·MMF형</a>
+    <a href="#jong">종금형</a>
+    <a href="#trap">한도 함정</a>
+    <a href="#fee">수수료 면제</a>
+    <a href="#none">CMA 미취급</a>
+    <a href="#links">확인 링크</a>
+  </div>
+</nav>
+
+<!-- 유형 이해 -->
+<section id="types">
+  <h2>CMA 5가지 유형<span>먼저 읽기</span></h2>
+  <p class="desc">CMA는 계좌 이름일 뿐이고, 실제로 돈이 어디에 들어가는지는 유형이 결정합니다. 금리만 비교하면 성격이 다른 상품을 나란히 놓게 됩니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:15%"><col style="width:40%"><col style="width:25%"><col style="width:20%"></colgroup>
+      <thead><tr><th>유형</th><th>돈이 들어가는 곳</th><th>금리 성격</th><th>예금자보호</th></tr></thead>
+      <tbody id="typeBody"></tbody>
+    </table>
+  </div>
+  <div class="note alert">
+    <strong>예금자보호 한도는 2025-09-01부터 1인당 1억원</strong>입니다(기존 5,000만원에서 상향). 다만 <strong>CMA·RP·발행어음은 전부 보호 대상이 아닙니다.</strong> 증권사가 파산하면 원금을 잃을 수 있고, 이 표에서 예외는 우리투자증권 종금형 3종뿐입니다. 반대로 CMA에 넣지 않고 계좌에 그냥 둔 현금(투자자예탁금)은 보호 대상입니다.
+  </div>
+</section>
+
+<!-- 종합표 -->
+<section id="main">
+  <h2>종합 비교표<span>24개사</span></h2>
+  <p class="desc">머리글을 누르면 정렬됩니다. 미고시·미확인 항목은 정렬 방향과 무관하게 항상 맨 아래로 내려가고, 순위 계산에서도 제외됩니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:16%"><col style="width:17%"><col style="width:19%"><col style="width:17%"><col style="width:16%"><col style="width:15%"></colgroup>
+      <thead><tr>
+        <th class="sortable" data-key="name">증권사</th>
+        <th class="sortable" data-key="rp">RP형</th>
+        <th class="sortable" data-key="bill">발행어음형</th>
+        <th class="sortable" data-key="mmw">MMW형</th>
+        <th>MMF형</th>
+        <th class="sortable" data-key="best">최고 확정금리</th>
+      </tr></thead>
+      <tbody id="mainBody"></tbody>
+    </table>
+  </div>
+  <div class="legend">
+    <span><span class="chip c-yes">취급</span> 해당 유형 운영</span>
+    <span><span class="chip c-no">미취급</span> 상품 없음</span>
+    <span><span class="chip c-need">미고시</span> 취급하나 수치를 공시하지 않음</span>
+    <span><span class="chip c-cap">한도</span> 금액 한도가 붙은 금리</span>
+  </div>
+  <div class="note">
+    <strong>최고 확정금리</strong>는 그 증권사의 <strong>확정금리 유형(RP형·발행어음형·종금형)</strong> 중 가장 높은 세전 연이율입니다. MMW·MMF형은 실적배당이고 보수 차감 기준도 회사마다 달라 이 계산에서 제외했습니다. 한도가 붙은 우대금리(네이버통장·카드우대 등)도 제외했습니다.
+  </div>
+</section>
+
+<div class="insight">
+  <span class="tag">KEY INSIGHT</span>
+  <h3>금리 숫자 하나만 보면 세 군데서 틀립니다</h3>
+  <p><strong>첫째, 한도.</strong> 미래에셋 네이버통장 2.65%는 <strong>1,000만원까지만</strong>이고 초과분은 2.10%로 떨어집니다. 신한 카드우대 최고 2.6%도 <strong>예치금 1,000만원 이하</strong> 한정에 전월 카드실적 100만원 조건이 붙습니다. 우리WON CMA Note 2.90%도 1,000만원 초과분은 2.70%입니다.</p>
+  <p><strong>둘째, 보수 차감 여부.</strong> MMW형은 한국증권금융 예치라 대부분 <strong>차감 전 2.62%</strong>로 같습니다. 그런데 메리츠는 <strong>차감 후 2.57%</strong>를 공시합니다. 나란히 놓으면 메리츠가 낮아 보이지만 실제 랩보수는 0.05%로 삼성과 같습니다. 반대로 하나는 랩보수가 0.1%라 차감 후가 더 낮습니다.</p>
+  <p><strong>셋째, 금리가 언제 반영되는지.</strong> 신한 RP형은 매수 시점 금리로 <strong>최대 28일 고정</strong>이라 인상돼도 재매수 전엔 옛 금리입니다. 교보는 <strong>90일 고정</strong>으로 더 깁니다. 반면 유진 자유형 CMA는 기존 잔액에도 인상분이 자동 적용됩니다. 같은 2%대라도 실제로 받는 시점이 다릅니다.</p>
+</div>
+
+<!-- RP형 -->
+<section id="rp">
+  <h2>RP형 CMA 상세<span>20개사</span></h2>
+  <p class="desc">가장 보편적인 유형입니다. 증권사가 보유한 채권을 담보로 확정 약정금리를 지급하고, 일정 주기마다 자동 재투자됩니다. <strong>재투자 주기가 곧 금리 갱신 주기</strong>라서, 주기가 길수록 금리 변동 반영이 늦습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:17%"><col style="width:22%"><col style="width:24%"><col style="width:22%"><col style="width:15%"></colgroup>
+      <thead><tr>
+        <th class="sortable" data-key="name">증권사</th>
+        <th class="sortable" data-key="rp">기본금리</th>
+        <th>재투자·금리적용 주기</th>
+        <th>자동매수 시각</th>
+        <th class="sortable" data-key="rpdate">기준일</th>
+      </tr></thead>
+      <tbody id="rpBody"></tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>자동매수 시각이 왜 중요한가.</strong> 그 시각 이후에 입금된 돈은 CMA 금리가 아니라 훨씬 낮은 <strong>예탁금이용료</strong>를 받고 다음 영업일로 넘어갑니다. 컷오프가 이른 곳(하나·SK·삼성 MMW 17:00)과 늦은 곳(다올·상상인·IBK 23:30, DB 23:50)의 차이가 하루 이자만큼 납니다.
+  </div>
+</section>
+
+<!-- 발행어음형 -->
+<section id="bill">
+  <h2>발행어음형 CMA<span>인가사 7곳</span></h2>
+  <p class="desc">증권사가 자기 신용으로 발행하는 어음입니다. 확정금리이고 RP형보다 대체로 높지만, <strong>담보가 없고 증권사 신용에 그대로 노출</strong>됩니다. 자기자본 4조원 이상 + 금융위 단기금융업 인가를 받은 회사만 취급할 수 있습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:18%"><col style="width:24%"><col style="width:14%"><col style="width:44%"></colgroup>
+      <thead><tr>
+        <th>증권사</th>
+        <th class="sortable" data-key="bill">발행어음형 CMA</th>
+        <th>인가일</th>
+        <th>비고</th>
+      </tr></thead>
+      <tbody id="billBody"></tbody>
+    </table>
+  </div>
+  <div class="note alert">
+    <strong>혼동하기 쉬운 두 가지를 정리합니다.</strong>
+    <ul>
+      <li><strong>키움증권</strong>은 발행어음 인가는 받았지만(2025-11-19) <strong>CMA 계좌 자체를 취급하지 않습니다.</strong> 인터넷에 도는 "키움 2.8%"는 CMA가 아니라 별도 발행어음 상품이고, 예수금 자동 스윕도 없어 직접 매수해야 합니다.</li>
+      <li><strong>신한투자증권</strong>도 인가를 받았고(2025-12-17) 'Premier 발행어음'(수시형 2.7%)을 팔지만, <strong>CMA 유형으로는 편입하지 않았습니다.</strong> 신한 CMA는 RP·MMF·MMW 3종입니다.</li>
+      <li><strong>삼성증권</strong>은 종투사 지정은 받았으나 단기금융업 인가는 아직 없습니다. 2026-07-31 제재 수위가 기관경고로 확정되며 결격사유가 풀려 <strong>2026년 9월 정례회의 결론이 전망</strong>됩니다.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- MMW / MMF -->
+<section id="mmw">
+  <h2>MMW형 · MMF형<span>실적배당</span></h2>
+  <p class="desc">둘 다 <strong>확정금리가 아닙니다.</strong> MMW형은 한국증권금융에 예치하는 투자일임(랩)이라 매 영업일 정산되는 일복리 구조이고, MMF형은 단기금융펀드라 기준가로 움직입니다. 그래서 상당수 증권사가 아예 수치를 고시하지 않습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:17%"><col style="width:23%"><col style="width:15%"><col style="width:15%"><col style="width:30%"></colgroup>
+      <thead><tr>
+        <th class="sortable" data-key="name">증권사</th>
+        <th class="sortable" data-key="mmw">MMW형 (개인)</th>
+        <th>보수</th>
+        <th>MMF형</th>
+        <th>비고</th>
+      </tr></thead>
+      <tbody id="mmwBody"></tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>MMW형이 대부분 2.62%로 같은 이유.</strong> 이 유형은 고객 자금을 전부 <strong>한국증권금융</strong>에 예치합니다. 운용처가 한 곳이니 증권사가 달라도 수익률이 수렴합니다. 한국증권금융 수시입출식 예수금 고시금리는 2026-07-20부터 <strong>연 2.43%</strong>이고(2.18%에서 인상), 여기에 비공시 우대금리가 얹혀 2.62%가 되는 구조로 보입니다. <strong>차이는 각 사 랩보수에서만 납니다</strong> — 삼성·메리츠·유안타 0.05%, 대신·유진 0.03%, 하나 0.1%.
+  </div>
+  <div class="note alert">
+    <strong>한화투자증권 MMW형은 예외적으로 낮습니다.</strong> CMA-MMW가 개인 2.09%인데, 같은 회사의 <strong>증금형 MMW(CMA 아님)는 2.54%</strong>로 45bp 차이가 납니다. 이름이 비슷해 혼동하기 쉬운 지점입니다.
+  </div>
+</section>
+
+<!-- 종금형 -->
+<section id="jong">
+  <h2>종금형 CMA<span>우리투자증권 단독</span></h2>
+  <p class="desc"><strong>이 표에서 유일하게 예금자보호가 되는 CMA</strong>입니다. 종합금융회사 라이선스로 발행하는 어음이라 예금성 상품으로 분류되고, 공시 문구도 "이 <em>예금</em>은 예금자보호법에 따라…"로 시작합니다. 2024년 우리종합금융과 한국포스증권이 합병하며 우리투자증권으로 승계됐습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:18%"><col style="width:26%"><col style="width:15%"><col style="width:18%"><col style="width:23%"></colgroup>
+      <thead><tr><th>상품</th><th>금리 (2026-08-19)</th><th>금리 성격</th><th>이자 지급</th><th>가입 조건</th></tr></thead>
+      <tbody id="jongBody"></tbody>
+    </table>
+  </div>
+  <div class="note alert">
+    <strong>홈페이지 배너 숫자를 그대로 믿으면 안 됩니다.</strong> 조사 시점 우리투자증권 홈페이지 배너는 CMA Note를 "최고 연 3.7%", CMA를 "최고 연 3%"로 표기하고 있으나, 같은 페이지의 <strong>금리안내 표(기준일 2026-08-19)는 각각 3.60% / 2.90%</strong>입니다. 이 표에는 금리안내 표를 정본으로 반영했습니다.
+  </div>
+  <div class="note">
+    한편 우리투자증권의 <strong>RP형 CMA(2.6%)는 종금형이 아니라 일반 CMA라 비보호</strong>입니다. 같은 증권사 안에서도 유형에 따라 보호 여부가 갈립니다.
+  </div>
+</section>
+
+<!-- 한도 함정 -->
+<section id="trap">
+  <h2>금리에 한도가 붙은 경우<span>반드시 확인</span></h2>
+  <p class="desc">광고에 나오는 숫자는 대부분 <strong>조건부 최고금리</strong>입니다. 한도를 넘으면 초과분만 낮아지는 게 아니라, 전액이 낮은 금리로 떨어지는 구조도 있습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:19%"><col style="width:13%"><col style="width:17%"><col style="width:21%"><col style="width:30%"></colgroup>
+      <thead><tr><th>증권사 · 상품</th><th>표시 금리</th><th>적용 한도</th><th>한도 초과 시</th><th>추가 조건</th></tr></thead>
+      <tbody id="trapBody"></tbody>
+    </table>
+  </div>
+  <div class="note">
+    조사 대상 24개사에서 <strong>"한도 없이 연 4~5%" 같은 특판 CMA는 한 건도 확인되지 않았습니다.</strong> 중소형사 특판을 기대하고 찾아봤으나, 진행 중인 CMA 고금리 이벤트가 없었습니다. 다만 다올·IBK·DB 3곳은 이벤트 게시판이 열리지 않아 <strong>"없음을 확인"이 아니라 "확인하지 못함"</strong>입니다.
+  </div>
+</section>
+
+<!-- 수수료 -->
+<section id="fee">
+  <h2>출금·이체 수수료 면제 조건</h2>
+  <p class="desc">금리 0.1%p 차이보다 수수료가 더 클 수 있습니다. 500만원을 1년 넣어도 0.1%p면 5,000원인데, 이체수수료 500원을 월 2회만 내도 12,000원입니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
+      <thead><tr><th>증권사</th><th>면제 조건</th></tr></thead>
+      <tbody id="feeBody"></tbody>
+    </table>
+  </div>
+  <div class="note">
+    <strong>조건 없이 전면 무료인 곳</strong>은 미래에셋(약관 명문), IBK투자증권(전 채널 이체수수료 전액 면제), 대신증권(이체 무료), NH투자증권(QV CMA 가입계좌 출금 시)입니다. 나머지는 대부분 급여이체·평잔·자동이체 중 하나를 충족해야 하고, <strong>조건이 깨지면 익월부터 다시 부과</strong>됩니다.
+  </div>
+</section>
+
+<!-- 미취급 -->
+<section id="none">
+  <h2>CMA를 취급하지 않는 증권사</h2>
+  <p class="desc">거래량이 많은 증권사인데도 CMA가 아예 없는 곳이 있습니다. 대신 예수금에 이용료를 지급하는데, 이 구조가 CMA보다 유리한 경우도 있습니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:16%"><col style="width:29%"><col style="width:37%"><col style="width:18%"></colgroup>
+      <thead><tr><th>증권사</th><th>확인 근거</th><th>대체 수단</th><th>예금자보호</th></tr></thead>
+      <tbody id="noneBody"></tbody>
+    </table>
+  </div>
+  <div class="note alert">
+    <strong>카카오페이증권 종합계좌 예탁금이용료 연 2.50%는 30만원 이하 구간에만 적용됩니다.</strong> 공시된 표는 30만원 초과 시 초과분이 아니라 <strong>전액이 연 0.15%</strong>로 적용되는 구간별 단일요율 구조입니다. 30만원까지의 소액 파킹용으로만 의미가 있습니다.
+  </div>
+  <div class="note">
+    <strong>토스·카카오페이의 예탁금은 예금자보호 대상입니다.</strong> CMA가 없다는 게 무조건 불리한 건 아닙니다. 금리는 낮지만 1억원까지 보호받는 위탁자예수금이기 때문입니다.
+  </div>
+</section>
+
+<!-- 확인 링크 -->
+<section id="links">
+  <h2>공식 확인 링크</h2>
+  <p class="desc">금리는 수시로 바뀝니다. 실제 가입 전에는 반드시 각 사 공식 페이지에서 직접 확인하세요.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
+      <thead><tr><th>증권사</th><th>공식 CMA 안내 페이지</th></tr></thead>
+      <tbody id="linkBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<div class="src">
+  <h3>출처 · 조사 방법 · 한계</h3>
+
+  <h4>조회 시점</h4>
+  <ul>
+    <li><strong>2026년 8월 19일</strong> 각 증권사 공식 홈페이지·공지사항·약관·상품설명서에서 직접 확인했습니다.</li>
+    <li>금리별 기준일은 표에 개별 표기했습니다. 대부분 <strong>2026-07-20~22 시행분</strong>입니다.</li>
+  </ul>
+
+  <h4>2026년 7월 금리 일제 인상의 배경</h4>
+  <ul>
+    <li>한국은행이 <strong>2026-07-16 금통위에서 기준금리를 연 2.50% → 2.75%로 0.25%p 인상</strong>했습니다(3년 6개월 만의 인상). 출처: 한국은행 기준금리 추이.</li>
+    <li>한국증권금융이 2026-07-16 공지로 수시입출식 예수금 고시금리를 2.18% → 2.43%로 변경, <strong>2026-07-20(월) 시행</strong>했습니다.</li>
+    <li>이에 맞춰 증권사들이 2026-07-20~22에 CMA·RP·발행어음 금리를 일제히 0.25%p 인상했습니다. <strong>2026-07-20 이전에 작성된 CMA 금리 자료는 전부 무효</strong>로 보셔야 합니다.</li>
+  </ul>
+
+  <h4>다음 금통위가 8일 뒤입니다</h4>
+  <ul>
+    <li><strong>2026-08-27(목) 금통위</strong>가 예정돼 있습니다. 인상되면 7월과 같이 며칠 내 전 증권사 CMA 금리가 다시 움직입니다. <strong>이 표는 2026-08-19 시점 스냅샷이며, 8/27 이후에는 재확인이 필요합니다.</strong></li>
+  </ul>
+
+  <h4>조사 중 발견한 낡은 데이터 (주의)</h4>
+  <ul>
+    <li><strong>삼성증권</strong> 모바일 CMA 안내 페이지에 <strong>2025-05-30 기준 연 2.00%</strong>가 1년 이상 방치돼 있습니다. 실제는 2.25%입니다.</li>
+    <li><strong>메리츠증권</strong> 구 페이지(MCmaInfo.do)에 <strong>2022-07-14 기준 연 1.90%</strong>가 살아 있습니다.</li>
+    <li><strong>한국투자증권</strong> MMW 수익률 표의 기준일이 <strong>2022년 4월</strong>로 방치돼 있습니다.</li>
+    <li><strong>우리투자증권</strong> 배너(3.7% / 3%)와 금리표(3.60% / 2.90%)가 같은 페이지에서 어긋납니다.</li>
+    <li><strong>상상인증권</strong>은 2.50%라는 값만 있고 <strong>적용 기준일자 표기가 없습니다.</strong></li>
+    <li>→ 이 표에는 <strong>실시간 API·금리 데이터 원본·공지 원문</strong>에서 취득한 값을 우선 반영했습니다.</li>
+  </ul>
+
+  <h4>확인하지 못한 항목</h4>
+  <ul>
+    <li><strong>MMW형 수익률 미고시</strong>: 한국투자·KB·대신·SK·DB·현대차 — 전부 "실적배당"으로만 공시하고 수치를 내지 않습니다.</li>
+    <li><strong>MMF형 수익률 미고시</strong>: 대부분의 증권사. 실적배당이라 기준가를 별도 조회해야 합니다.</li>
+    <li><strong>자동매수 시각</strong>: 한국투자·KB·신한 — 안내 페이지·설명서 전문에 시각이 정의돼 있지 않습니다.</li>
+    <li><strong>진행 중 CMA 특판 유무</strong>: 다올·IBK·DB — 이벤트 게시판이 AJAX로 로드돼 목록을 열지 못했습니다. <strong>"없다"가 아니라 "확인하지 못했다"</strong>입니다.</li>
+    <li><strong>최대 예치금액</strong>: 미래에셋·한국투자·NH·삼성·KB — 약관·안내 전문에 상한 조항이 없습니다. 상한 미설정으로 보이나 명문 근거가 없어 미확인 처리했습니다.</li>
+    <li>미확인 항목은 순위·정렬 계산에서 제외했습니다. 값을 0으로 두면 실제보다 유리해 보이는 왜곡이 생기기 때문입니다.</li>
+  </ul>
+
+  <h4>비교의 한계</h4>
+  <ul>
+    <li><strong>MMW형의 보수 차감 전/후 표기가 회사마다 다릅니다.</strong> 대부분 차감 전을 공시하지만 메리츠·유진은 차감 후를 공시합니다. 표에 어느 쪽인지 표기했으나, 같은 기준으로 정렬하면 오해가 생길 수 있습니다.</li>
+    <li><strong>MMF형은 확정금리가 아닙니다.</strong> 현대차증권 MMF 1일 3.28%는 과거 수익률이며, 앞으로 그 금리를 받는다는 뜻이 아닙니다.</li>
+    <li><strong>기존 계좌는 이 표와 다릅니다.</strong> RP형은 매수 시점 금리로 고정되는 구조가 많아(신한 28일, 교보 90일), 지금 보유 중인 계좌의 실제 적용 금리는 별도 확인이 필요합니다.</li>
+  </ul>
+
+  <h4>참고한 1차 자료</h4>
+  <ul>
+    <li>각 증권사 공식 홈페이지 · 공지사항 · 약관 · 상품설명서 (표의 확인 링크 참조)</li>
+    <li>금융위원회 보도자료 — 단기금융업 인가 (2025-11-19 키움 / 2025-12-17 하나·신한 / 2026-03-19 종투사 지정 현황)</li>
+    <li>한국은행 기준금리 추이 및 2026년 통화정책방향 결정회의 일정</li>
+    <li>한국증권금융 「대고객 수신금리 변경 안내」 (2026-07-16 공지, 2026-07-20 시행)</li>
+    <li>예금보험공사 보호한도 변경 안내 및 보호대상 상품 목록</li>
+    <li>금융투자협회 「CMA 업무관련 모범규준」, 「금융투자회사의 영업 및 업무에 관한 규정」 제2-38조</li>
+  </ul>
+</div>
+
+<footer>
+  이 자료는 <strong>정보 제공 목적</strong>으로 작성되었으며, 특정 증권사·금융상품의 가입을 권유하지 않습니다.<br>
+  수익률을 보장하지 않으며, CMA는 <strong>예금자보호법에 따라 보호되지 않는 상품</strong>입니다(우리투자증권 종금형 제외).<br>
+  금리는 수시로 변동하므로 실제 거래 전 반드시 해당 증권사의 공식 안내를 직접 확인하시기 바랍니다.<br>
+  데이터 확인일 2026-08-19 · 다음 금통위 2026-08-27 이후 재확인 권장
+</footer>
+
+</div>
+
+<script>
+/* ===== 데이터 — 갱신 시 이 블록만 수정 ===== */
+
+const TYPES = [
+  ['RP형','증권사 보유 채권을 담보로 한 환매조건부채권','확정(약정)금리','비보호'],
+  ['발행어음형','증권사가 자기 신용으로 발행하는 어음','확정금리','비보호'],
+  ['MMW형','한국증권금융 예치 (투자일임·랩)','실적배당 · 일복리','비보호'],
+  ['MMF형','단기금융펀드 (국공채·CD·콜 등)','실적배당 · 기준가','비보호'],
+  ['종금형','종합금융회사 발행어음 · 우리투자증권 단독','확정 또는 변동금리','보호 (1억원)']
+];
+
+const B = [
+{id:'mirae',n:'미래에셋증권',t:'대형',
+ rp:{r:2.10,d:'2026-07-21',c:'31일 재투자',s:'개인 16:30~22:00',note:'VIP 2.20%'},
+ bill:{r:2.40,d:'2026-07-22',c:'31일 재투자',s:'17:00 · 23:00 · 23:30'},
+ mmw:{r:2.62,net:2.47,fee:'0.05%',basis:'차감 전',d:'2026-07-21',note:'공식 명칭 WRAP형'},
+ mmf:false,
+ fee:'조건 없이 영업점·사이버·은행CD 이체/출금 전면 무료 (약관 명문)',
+ url:'https://securities.miraeasset.com/hks/hks4113/n02.do'},
+
+{id:'koreainv',n:'한국투자증권',t:'대형',
+ rp:{r:2.30,d:'2026-07-20',c:'1~30일 약정<br>31일 초과는 CMA수익률',s:null},
+ bill:{r:2.60,d:'2026-07-22',c:'매일 정산 후 재매수',s:null,note:'법인 2.45%'},
+ mmw:{r:null,note:'표기 기준일 2022년 방치'},
+ mmf:{r:null,note:'3개 펀드 운용'},
+ extra:'기간물 RP형 CMA 별도',
+ fee:'은행 2곳 CD·ATM 면제 / 급여 50만원 + 지급결제 1건 → 전 금융기관 면제 / 카드 20만원 → 익월 온라인 타사이체 면제',
+ url:'https://www.truefriend.com/main/mall/opencma/CmaInfo.jsp?cmd=TF02bc000000'},
+
+{id:'nh',n:'NH투자증권(나무)',t:'대형',
+ rp:{r:2.00,top:2.05,d:'2026-07-21',c:'30일 재투자',s:'영업일 18:00경',note:'등급별 · 탑클래스 2.05%'},
+ bill:{r:2.35,d:'2026-07-21',c:'매 영업일 재투자',s:'18:00 · 21:30 · 23:00'},
+ mmw:{r:2.62,basis:'차감 전',d:'2026-07-21'},
+ mmf:{r:null,note:'2019-07 신규가입 중단'},
+ fee:'QV CMA 가입계좌 출금 시 이체수수료 조건 없이 면제 (CD·ATM 요건 미확인)',
+ url:'https://www.nhqv.com/WMDoc.action?viewPage=/finance/cma/introCma.jsp'},
+
+{id:'samsung',n:'삼성증권',t:'대형',
+ rp:{r:2.25,d:'2026-07-20',c:'재투자 없음<br>출금 시 과세',s:'영업일 00:00~23:00'},
+ bill:false, billNote:'인가 심사 중<br>2026년 9월 결론 전망',
+ mmw:{r:2.62,net:2.57,fee:'0.05%',basis:'차감 전',d:'2026-07-20',s:'~17:00'},
+ mmf:{r:null,note:'자동매수 1,000원 이상'},
+ fee:'3개 중 1개 — ①서비스등급 우대 이상 ②급여 50만원 이상 또는 공적연금 ③연계 신용카드 30만원 사용',
+ url:'https://www.samsungpop.com/mbw/finance/cma.do?cmd=guide',
+ warn:'모바일 안내 페이지에 2025-05-30 기준 2.00% 방치'},
+
+{id:'kb',n:'KB증권',t:'대형',
+ rp:{r:2.25,d:'2026-07-21',c:'31일 재투자',s:null},
+ bill:{r:2.35,d:'2026-07-21',c:'일 단위 자동 재투자',s:null},
+ mmw:{r:null,note:'수치 비공개'},
+ mmf:{r:null,note:'기존 계좌 전환 불가'},
+ extra:'약정식 RP 90일·180일 별도',
+ fee:'5개 중 1개 — ①최초 개설(익월말까지) ②급여 전월 10만원 ③자동납부 전월 1건 ④적립식 10만원 자동대체 ⑤체크카드 10만원 사용',
+ url:'https://www.kbsec.com/go.able?linkcd=m01030002',
+ warn:'매월 1일 00:10~00:40은 면제 대상자 선정 작업으로 수수료 부과 가능'},
+
+{id:'shinhan',n:'신한투자증권',t:'대형',
+ rp:{r:2.20,d:'2026-08-19',c:'28일 단위 재적용',s:null,note:'실시간 API'},
+ bill:false, billNote:'인가 보유, CMA 유형 아님<br>별도 Premier 발행어음 2.7%',
+ mmw:{r:2.62,basis:'차감 전',d:'2026-08-19'},
+ mmf:{r:null,note:'개인만'},
+ fee:'신한은행 이체·CD/ATM 무조건 면제. 타 금융기관은 4개 중 1개 — ①적립식 10만원 자동대체 ②10만원 자동이체 입금 ③월평잔 500만원 ④급여코드 50만원',
+ url:'https://www.shinhansec.com/siw/wealth-management/cma/info/view.do',
+ warn:'RP형은 매수 시점 금리로 최대 28일 고정'},
+
+{id:'hana',n:'하나증권',t:'대형',
+ rp:{r:2.30,d:'2026-07-20',c:'단일<br>90일 초과 시 재적용',s:'영업일 17:00'},
+ bill:{r:2.70,d:'2026-07-28',c:'수시형',s:'영업일 17:00',note:'중도해지 수수료 없음'},
+ mmw:{r:2.62,fee:'0.1%',basis:'차감 전',d:'2026-07-20',note:'법인 2.55%<br>화면 미노출(서버값)'},
+ mmf:{r:null,note:'영업외 출금은 이자 0% 대출'},
+ fee:'CD/ATM+온라인 타행송금 3개 중 1개(평잔 1,000만원 / 6개월 수수료 5만원 / 월 10만원 자동이체). 온라인 타행송금 별도 6개 중 1개',
+ url:'https://www.hanaw.com/main/finance/CMA/FP_040101_P.cmd'},
+
+{id:'meritz',n:'메리츠증권',t:'대형',
+ rp:{r:2.25,d:'2026-07-20',c:'30일 자동재투자',s:'있음'},
+ bill:false, mmf:false,
+ mmw:{r:2.57,fee:'0.05%',basis:'차감 후',d:'2026-07-20',note:'법인 2.50%<br>타사 차감 전과 비교 불가'},
+ extra:'Super365 원화RP 2.25% / USD RP 2.70%',
+ fee:'인터넷뱅킹 수수료 무료 (구체 요건 미기재)',
+ url:'https://home.imeritz.com/meritzcma/CmaRp.do',
+ warn:'구 페이지에 2022-07-14 기준 1.90% 잔존'},
+
+{id:'daishin',n:'대신증권',t:'대형',
+ rp:{r:2.60,d:'2026-07-22',c:'단일',s:'있음',note:'국공채RP형 2.55%'},
+ bill:false, mmf:false,
+ mmw:{r:null,fee:'0.03%',note:'수치 비공개'},
+ fee:'이체수수료 조건 없이 무료 / CD·ATM 5개 은행 평일 08:30~18:00 면제',
+ url:'https://www.daishin.com/g.ds?p=909&v=592'},
+
+{id:'eugene',n:'유진투자증권',t:'대형',
+ rp:{r:2.50,top:2.65,d:'2026-07-20',c:'자유형 단일<br>자산관리형 기간구간',s:'있음',note:'자산관리형 최장 2.65%'},
+ bill:false, mmf:false,
+ mmw:{r:null,note:'CMA 아님<br>Wrap 개인 2.59%(차감 후)'},
+ fee:'미확인',
+ url:'https://m.eugenefn.com/ig50r.do'},
+
+{id:'hanwha',n:'한화투자증권',t:'중소형',
+ rp:{r:2.20,top:2.35,d:'2026-07-20',c:'단일',s:'16:45 · 23:00',note:'금액 구간별<br>3천만~1억 2.25% · 1억↑ 2.35%'},
+ bill:false,
+ mmw:{r:2.09,basis:'차감 전',d:'2026-07-20',s:'17:00',note:'법인 2.05%<br>조사 대상 중 최저'},
+ mmf:{r:null,note:'자동매수 16:30'},
+ fee:'VIP 이상 전면 면제 / 신규 카드 계좌 월 10회 CD·ATM 무료 / 급여 50만원 등록 시 온라인이체 월 10회',
+ url:'https://www.hanwhawm.com/static/finance/cma/FI222_1p.htm'},
+
+{id:'yuanta',n:'유안타증권',t:'중소형',
+ rp:{r:2.35,d:'2026-08-19',c:'30일 자동재예탁',s:'있음',note:'약정 후 0.1%'},
+ bill:false,
+ mmw:{r:2.62,net:2.57,fee:'0.05%',basis:'차감 전',d:'2026-08-19',s:'17:00',note:'약정형 12개월 3.20%<br>(별도·최소 100만원)'},
+ mmf:{r:null,note:'법인 불가'},
+ fee:'당사이체 무료 / 타사이체는 등급별 (플래티넘·프라임골드 무료)',
+ url:'https://www.myasset.com/myasset/static/mall/wcma/MA_0501004_P2.jsp'},
+
+{id:'sk',n:'SK증권',t:'중소형',
+ rp:{r:2.45,d:'2026-08-19',c:'개인 1일 · 법인 30일',s:'23:50'},
+ bill:false,
+ mmw:{r:null,s:'17:00',note:'수치 비공개'},
+ mmf:{r:null,note:'익일매수 · 개인만'},
+ fee:'신규~익익월말 면제. 이후 4개 중 1개 — ①월 100만원 이체입금 ②적립식 10만원 자동대체 ③결제 3건 등록 ④전월 평잔 500만원',
+ url:'https://www.sks.co.kr/main/product/cma/mCMA/html/PD_04001_T01.htm'},
+
+{id:'wooriib',n:'우리투자증권',t:'중소형',
+ rp:{r:2.60,d:'2026-07-22',c:'매 영업일 자동매수',s:'23:30'},
+ bill:false, mmw:false, mmf:false,
+ jong:2.90,
+ fee:'미확인',
+ url:'https://securities.wooriib.com/HPKOFngoAction.do?method=hpwoncmanoteinf&BOARD_ID=38'},
+
+{id:'kyobo',n:'교보증권',t:'중소형',
+ rp:{r:2.45,d:'2026-07-21',c:'★ 90일 단위 변동금리',s:'16:30 · 개인 22:00'},
+ bill:false,
+ mmw:{r:2.62,basis:'차감 전',d:'2026-07-20',note:'법인 2.55%<br>상품안내 없이 공지로만'},
+ mmf:{r:null,note:'자동매수 1만원 이상'},
+ fee:'최초 등록일부터 2개월 무조건 면제. 이후 4개 중 1개 — ①직전월 일평잔 500만원 ②2개월 연속 급여이체 ③2개월 연속 100만원 이체입금 ④적립식 10만원 자동대체',
+ url:'https://www.iprovest.com/cyber/cma/pluscmaintro.htm'},
+
+{id:'daol',n:'다올투자증권',t:'중소형',
+ rp:{r:2.60,d:'2026-07-20',c:'단일 약정수익률',s:'평일 23:30'},
+ bill:false, mmw:false, mmf:false,
+ fee:'미확인',
+ url:'https://www.daolsecurities.com/customer/guide/cmaProduct01.jsp'},
+
+{id:'sangsangin',n:'상상인증권',t:'중소형',
+ rp:{r:2.50,d:null,c:'단일',s:'23:30',note:'★ 기준일자 표기 없음'},
+ bill:false, mmw:false, mmf:false,
+ fee:'미확인',
+ url:'https://www.sangsanginib.com/info/cmaView'},
+
+{id:'ibk',n:'IBK투자증권',t:'중소형',
+ rp:{r:2.50,d:'2026-07-20',c:'단일',s:'매 영업일 23:30~23:50'},
+ bill:false, mmw:false, mmf:false,
+ fee:'★ 조건 없이 전액 면제 — 전 영업점·홈페이지·HTS·ARS 이체수수료 (타 은행 CD기는 은행 수수료 발생)',
+ url:'https://www.ibks.com/fundproduct/cma/cmaservice_Rate.do'},
+
+{id:'db',n:'DB증권',t:'중소형',
+ rp:{r:2.50,d:'2026-07-20',c:'30일 자동환매 후 재투자',s:'영업일·토 23:50'},
+ bill:false,
+ mmw:{r:null,fee:'0.05%',s:'17:00',note:'투자일임 계약 필요'},
+ mmf:false,
+ fee:'신규~익월말 월 10회 무료. 이후 3개 중 1개 — ①순입금 10만원 ②타계좌 10만원 자동이체 ③월평잔 500만원',
+ url:'https://www.dbsec.co.kr/product/cma/pr_CmaInfo_viw.do'},
+
+{id:'im',n:'iM증권',t:'중소형',
+ rp:{r:2.50,d:'2026-08-19',c:'단일',s:null,note:'★ 신규가입 불가<br>기존 보유자만'},
+ bill:false, mmw:false,
+ mmf:{r:null,note:'매일 변동'},
+ fee:'CMA카드 발급 시 선택은행 1곳 출금 전액 면제 / 급여이체 등록 시 전 은행 CD·ATM 24시간 무료 / 이체 300원',
+ url:'https://www.imfnsec.com/mall/hi_cma/ml0301_01.jsp'},
+
+{id:'hmsec',n:'현대차증권',t:'중소형',
+ rp:{r:2.45,top:2.50,d:'2026-07-20',c:'단일',s:'영업일 21:00 이전 입금분',note:'디지털형 2.50%<br>2023-05 이후 MTS 개설 한정'},
+ bill:false,
+ mmw:{r:null,note:'증권금융 1일물 − 수수료'},
+ mmf:{r:3.28,past:true,d:'2026-08-19',note:'Plus 신종개인용MMF2호 C<br>1일 기준'},
+ fee:'미확인',
+ url:'https://www.hmsec.com/goMenu.do?scr_menu_id=PD0202'}
+];
+
+const BILL_LIC = {
+  koreainv:'2017-11', nh:'2018-05-30', kb:'2019-05', mirae:'2021-05',
+  kiwoom:'2025-11-19', hana:'2025-12-17', shinhan:'2025-12-17'
+};
+
+const JONG = [
+  {n:'우리WON CMA Note',r:'1천만원 이하 2.90%<span class="sub">1천만원 초과 2.70%</span>',t:'변동금리',p:'매월 말 결산<br>익월 5일 (월복리)',c:'19세 이상 개인<br>1인 1계좌 · MTS 전용'},
+  {n:'CMA Note',r:'365일 3.60%<span class="sub">1~89일 2.70 · 90~179일 3.10 · 180~269일 3.40 · 270~364일 3.50</span>',t:'확정금리',p:'인출 시 정산',c:'제한 없음<br>비과세종합저축 가능'},
+  {n:'CMA',r:'365일 2.90%<span class="sub">1~89일 2.60 · 90~179일 2.70 · 180~364일 2.80</span>',t:'실적배당형<br>(변동금리)',p:'인출 시 정산',c:'선입선출<br>비과세종합저축 가능'}
+];
+
+const TRAP = [
+  {b:'미래에셋증권',p:'CMA RP_네이버통장',r:'2.65%',cap:'1,000만원 이하',over:'초과분 연 2.10%',cond:'네이버통장 연계'},
+  {b:'신한투자증권',p:'카드 우대수익률',r:'최고 2.60%',cap:'예치금 1,000만원 이하',over:'초과분 기본금리 2.20%',cond:'전월 카드실적 100만원 (30/50/70만원은 1.3/1.7/2.1%) · RP형·MMW형만'},
+  {b:'우리투자증권',p:'우리WON CMA Note',r:'2.90%',cap:'잔액 1,000만원 이하',over:'초과분 연 2.70%',cond:'19세 이상 개인 1인 1계좌'},
+  {b:'한화투자증권',p:'Smart CMA RP형',r:'2.35%',cap:'1억원 이상 예치 시',over:'3천만원 미만 2.20%',cond:'우대가 아니라 금액 구간별 차등 — 많이 넣어야 높음'},
+  {b:'현대차증권',p:'디지털 RP형 CMA',r:'2.50%',cap:'한도 없음',over:'일반 RP형 2.45%',cond:'2023-05-15 이후 MTS로 개설한 개인계좌만 신청 가능'},
+  {b:'카카오페이증권',p:'종합계좌 예탁금이용료',r:'2.50%',cap:'30만원 이하',over:'★ 초과분이 아니라 전액 연 0.15%',cond:'CMA 아님 · 예금자보호 대상'},
+  {b:'SK증권',p:'사회공헌활동 우대',r:'+0.10%p',cap:'한도 조건 미확인',over:'—',cond:'2026-07-01부로 신규 접수 중단 · MMF형 제외'}
+];
+
+const NONE = [
+  {n:'키움증권',why:'CMA 상품 자체 미취급<span class="sub">통합검색 메뉴 0건 · 금융상품 메뉴 736항목에 부재 · 언론 2건 명시</span>',
+   alt:'발행어음 별도 상품<span class="sub">개인 수시 2.80% / 7~30일 2.85% / 365일 3.85% (2026-08-07)<br>일반계좌 RP 수동매수 7일 2.45% · 예수금 자동 스윕 없음</span>',prot:false},
+  {n:'토스증권',why:'CMA 미취급<span class="sub">보호금융상품등록부 3건 전부 예수금 · 투자상품 라인업에 부재</span>',
+   alt:'예탁금이용료<span class="sub">원화 연 1.0% / 외화 연 0.6% · 매달 마지막 영업일 지급</span>',prot:true},
+  {n:'카카오페이증권',why:'CMA 미취급<span class="sub">약관 5페이지 전수에 CMA·RP·MMF·MMW 약관 0건</span>',
+   alt:'예탁금이용료<span class="sub">종합계좌 30만원 이하 연 2.50% / 30만원 초과 연 0.15% · 주간 지급</span>',prot:true},
+  {n:'부국증권',why:'홈페이지 전 메뉴에 CMA 부재<span class="sub">본문 \'CMA\' 문자열 0건 · 미취급은 추론</span>',
+   alt:'예탁금이용료<span class="sub">연 1.00% (2024-02-19 기준)</span>',prot:true}
+];
+
+/* ===== 렌더링 ===== */
+const esc = s => String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const pct = v => v==null ? null : v.toFixed(2)+'%';
+
+// 대표(최고) 금리 — 확정금리 유형(RP·발행어음·종금)만.
+// MMW·MMF는 실적배당이고 보수 차감 기준도 회사마다 달라 제외한다.
+function cands(b){
+  const c=[];
+  if(b.rp && b.rp.r!=null) c.push([b.rp.top||b.rp.r,'RP형']);
+  if(b.bill && b.bill.r!=null) c.push([b.bill.r,'발행어음형']);
+  if(b.jong!=null) c.push([b.jong,'종금형']);
+  return c;
+}
+function best(b){
+  const c=cands(b);
+  return c.length ? Math.max(...c.map(x=>x[0])) : null;
+}
+// 최고값을 낸 유형 (동률이면 모두)
+function bestType(b){
+  const c=cands(b), m=best(b);
+  if(m==null) return '';
+  return c.filter(x=>x[0]===m).map(x=>x[1]).join(' · ');
+}
+
+function cellRate(o,key){
+  if(o===false||o===undefined) return '<span class="chip c-no">미취급</span>';
+  if(o.r==null) return '<span class="chip c-need">미고시</span>'+(o.note?'<span class="sub">'+o.note+'</span>':'');
+  let h='<span class="big">'+pct(o.r)+'</span>';
+  if(o.top) h+=' <span class="chip c-cap">~'+pct(o.top)+'</span>';
+  if(o.basis) h+=' <span class="chip c-band">'+o.basis+'</span>';
+  if(o.past) h+=' <span class="chip c-need">과거수익률</span>';
+  if(o.note) h+='<span class="sub">'+o.note+'</span>';
+  return h;
+}
+
+// 유형 표
+document.getElementById('typeBody').innerHTML = TYPES.map(r=>
+  '<tr><td class="name">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+
+  (r[3].startsWith('보호')?'<span class="chip c-prot">'+r[3]+'</span>':'<span class="chip c-unprot">'+r[3]+'</span>')+
+  '</td></tr>').join('');
+
+// 종합표
+function rowMain(b){
+  const bl = b.bill===false
+    ? '<span class="chip c-no">미취급</span>'+(b.billNote?'<span class="sub">'+b.billNote+'</span>':'')
+    : cellRate(b.bill);
+  const mf = b.mmf===false ? '<span class="chip c-no">미취급</span>'
+    : (b.mmf && b.mmf.r!=null ? cellRate(b.mmf)
+    : (b.mmf ? '<span class="chip c-need">미고시</span>'+(b.mmf.note?'<span class="sub">'+b.mmf.note+'</span>':'') : '<span class="chip c-no">미취급</span>'));
+  const bs = best(b);
+  return '<tr data-broker="'+b.n+'">'
+    +'<td class="name">'+b.n+'<span class="sub">'+b.t+'</span></td>'
+    +'<td class="num">'+cellRate(b.rp)+'</td>'
+    +'<td class="num">'+bl+'</td>'
+    +'<td class="num">'+(b.mmw===false?'<span class="chip c-no">미취급</span>':cellRate(b.mmw))+'</td>'
+    +'<td class="num">'+mf+'</td>'
+    +'<td class="num">'+(bs!=null
+        ? '<span class="big">'+pct(bs)+'</span><span class="sub">'+bestType(b)
+          +(b.jong!=null?'<br><span class="chip c-prot">예금자보호</span>':'')+'</span>'
+        : '<span class="dash">–</span>')+'</td></tr>';
+}
+document.getElementById('mainBody').innerHTML = B.map(rowMain).join('');
+
+// RP형
+document.getElementById('rpBody').innerHTML = B.filter(b=>b.rp).map(b=>
+  '<tr data-broker="'+b.n+'">'
+  +'<td class="name">'+b.n+'</td>'
+  +'<td class="num">'+cellRate(b.rp)+'</td>'
+  +'<td>'+(b.rp.c||'<span class="dash">미확인</span>')+(b.extra?'<span class="sub">'+b.extra+'</span>':'')+'</td>'
+  +'<td>'+(b.rp.s||'<span class="chip c-need">미확인</span>')+'</td>'
+  +'<td>'+(b.rp.d||'<span class="chip c-need">미표기</span>')+'</td></tr>').join('');
+
+// 발행어음형
+const billRows = B.filter(b=>b.bill || b.bill===false && b.billNote);
+document.getElementById('billBody').innerHTML = billRows.map(b=>
+  '<tr data-broker="'+b.n+'">'
+  +'<td class="name">'+b.n+'</td>'
+  +'<td class="num">'+(b.bill===false?'<span class="chip c-no">CMA 유형 아님</span>':cellRate(b.bill))+'</td>'
+  +'<td>'+(BILL_LIC[b.id]||'<span class="chip c-need">미인가</span>')+'</td>'
+  +'<td>'+(b.billNote||(b.bill&&b.bill.d?'기준일 '+b.bill.d:'')+(b.bill&&b.bill.s?' · 자동매수 '+b.bill.s:''))+'</td></tr>').join('')
+  +'<tr data-broker="키움증권"><td class="name">키움증권</td>'
+  +'<td class="num"><span class="chip c-no">CMA 미취급</span><span class="sub">발행어음 별도 상품 수시 2.80%</span></td>'
+  +'<td>2025-11-19</td><td>CMA 계좌 자체가 없어 예수금 자동 스윕 불가 · 직접 매수 방식</td></tr>';
+
+// MMW / MMF
+document.getElementById('mmwBody').innerHTML = B.filter(b=>b.mmw!==false||b.mmf!==false).map(b=>{
+  const mf = b.mmf===false?'<span class="chip c-no">미취급</span>'
+    :(b.mmf?(b.mmf.r!=null?cellRate(b.mmf):'<span class="chip c-need">미고시</span>'):'<span class="chip c-no">미취급</span>');
+  return '<tr data-broker="'+b.n+'">'
+  +'<td class="name">'+b.n+'</td>'
+  +'<td class="num">'+(b.mmw===false?'<span class="chip c-no">미취급</span>':cellRate(b.mmw))+'</td>'
+  +'<td>'+(b.mmw&&b.mmw.fee?b.mmw.fee:'<span class="dash">–</span>')+(b.mmw&&b.mmw.net?'<span class="sub">차감 후 '+pct(b.mmw.net)+'</span>':'')+'</td>'
+  +'<td class="num">'+mf+'</td>'
+  +'<td>'+((b.mmf&&b.mmf.note)?b.mmf.note:'<span class="dash">–</span>')+'</td></tr>';
+}).join('');
+
+// 종금형
+document.getElementById('jongBody').innerHTML = JONG.map(j=>
+  '<tr data-broker="우리투자증권"><td class="name">'+j.n+'</td><td class="num"><span class="big">'+j.r+'</span></td>'
+  +'<td>'+j.t+'</td><td>'+j.p+'</td><td>'+j.c+'</td></tr>').join('')
+  +'<tr data-broker="우리투자증권"><td class="name">RP형 CMA<span class="sub">비교용</span></td>'
+  +'<td class="num"><span class="big">2.60%</span><span class="sub">기준일 2026-07-22</span></td>'
+  +'<td>확정금리</td><td>자동환매 시</td>'
+  +'<td><span class="chip c-unprot">비보호</span><span class="sub">같은 회사라도 종금형이<br>아니면 보호 안 됨</span></td></tr>';
+
+// 한도 함정
+document.getElementById('trapBody').innerHTML = TRAP.map(t=>
+  '<tr data-broker="'+t.b+'"><td class="name">'+t.b+'<span class="sub">'+t.p+'</span></td>'
+  +'<td class="num"><span class="big">'+t.r+'</span></td>'
+  +'<td><span class="chip c-cap">'+t.cap+'</span></td>'
+  +'<td>'+t.over+'</td><td>'+t.cond+'</td></tr>').join('');
+
+// 수수료
+document.getElementById('feeBody').innerHTML = B.map(b=>
+  '<tr data-broker="'+b.n+'"><td class="name">'+b.n+'</td><td>'
+  +(b.fee==='미확인'?'<span class="chip c-need">미확인</span> <span class="sub">공식 안내 페이지에 요건이 기재돼 있지 않음</span>':b.fee)
+  +(b.warn?'<span class="sub">⚠ '+b.warn+'</span>':'')+'</td></tr>').join('');
+
+// 미취급
+document.getElementById('noneBody').innerHTML = NONE.map(x=>
+  '<tr data-broker="'+x.n+'"><td class="name">'+x.n+'</td><td>'+x.why+'</td><td>'+x.alt+'</td>'
+  +'<td>'+(x.prot?'<span class="chip c-prot">보호 1억원</span><span class="sub">투자자예탁금</span>':'<span class="chip c-unprot">비보호</span>')+'</td></tr>').join('');
+
+// 링크
+document.getElementById('linkBody').innerHTML = B.map(b=>
+  '<tr data-broker="'+b.n+'"><td class="name">'+b.n+'</td>'
+  +'<td><a href="'+b.url+'" target="_blank" rel="noopener" style="color:var(--brown);word-break:break-all">'+b.url+'</a></td></tr>').join('');
+
+/* ===== 정렬 ===== */
+function val(b,key){
+  switch(key){
+    case 'name': return b.n;
+    case 'rp': return (b.rp && b.rp.r!=null) ? (b.rp.top||b.rp.r) : null;
+    case 'bill': return (b.bill && b.bill.r!=null) ? b.bill.r : null;
+    case 'mmw': return (b.mmw && b.mmw.r!=null) ? b.mmw.r : null;
+    case 'rpdate': return (b.rp && b.rp.d) ? b.rp.d : null;
+    case 'best': return best(b);
+  }
+}
+document.querySelectorAll('th.sortable').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const table = th.closest('table');
+    const tbody = table.querySelector('tbody');
+    const key = th.dataset.key;
+    const asc = th.dataset.dir !== 'asc';
+    table.querySelectorAll('th').forEach(o=>{
+      o.classList.remove('active');
+      o.innerHTML = o.innerHTML.replace(/\s*[▲▼]$/,'');
+      if(o!==th) delete o.dataset.dir;
+    });
+    th.dataset.dir = asc?'asc':'desc';
+    th.classList.add('active');
+    th.innerHTML += asc?' ▲':' ▼';
+
+    // 이 표에 실제로 그려진 증권사만 대상으로 정렬
+    const rows = Array.from(tbody.rows);
+    const idx = new Map(B.map(b=>[b.n,b]));
+    rows.sort((ra,rb)=>{
+      const a = idx.get(ra.dataset.broker), b2 = idx.get(rb.dataset.broker);
+      if(!a && !b2) return 0;
+      if(!a) return 1;
+      if(!b2) return -1;
+      const x = val(a,key), y = val(b2,key);
+      // 미확인(null)은 방향과 무관하게 항상 마지막
+      if(x==null && y==null) return 0;
+      if(x==null) return 1;
+      if(y==null) return -1;
+      if(key==='name'||key==='rpdate') return asc ? String(x).localeCompare(String(y),'ko') : String(y).localeCompare(String(x),'ko');
+      return asc ? x-y : y-x;
+    });
+    rows.forEach(r=>tbody.appendChild(r));
+  });
+});
+
+/* ===== 검색 필터 ===== */
+document.getElementById('search').addEventListener('input',e=>{
+  const q = e.target.value.trim();
+  document.querySelectorAll('tbody tr[data-broker]').forEach(tr=>{
+    tr.style.display = (!q || tr.dataset.broker.includes(q)) ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

@@ -148,8 +148,10 @@ section > p.desc{font-size:15px;color:var(--ink-soft);margin-bottom:18px;max-wid
   border-radius:20px;padding:6px;
 }
 table{border-collapse:collapse;width:100%;font-size:14px;min-width:700px;table-layout:fixed}
-th,td{padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);word-break:keep-all}
-td{line-height:1.45;vertical-align:top}
+th,td{padding:10px 10px;text-align:center;border-bottom:1px solid var(--border);word-break:keep-all}
+td{line-height:1.45;vertical-align:middle}
+/* 긴 서술형 칸은 왼쪽 정렬 — 가운데로 두면 읽기 어렵다 */
+td.txt{text-align:left;vertical-align:top}
 thead th{
   background:var(--bg-alt);font-weight:900;font-size:13px;color:var(--dark-warm);
   white-space:nowrap;position:relative;vertical-align:middle;
@@ -857,7 +859,7 @@ function cellRate(o,key){
 
 // 유형 표
 document.getElementById('typeBody').innerHTML = TYPES.map(r=>
-  '<tr><td class="name">'+r[0]+'</td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+
+  '<tr><td class="name">'+r[0]+'</td><td class="txt">'+r[1]+'</td><td>'+r[2]+'</td><td>'+
   (r[3].startsWith('보호')?'<span class="chip c-prot">'+r[3]+'</span>':'<span class="chip c-unprot">'+r[3]+'</span>')+
   '</td></tr>').join('');
 
@@ -899,10 +901,10 @@ document.getElementById('billBody').innerHTML = billRows.map(b=>
   +'<td class="name">'+b.n+'</td>'
   +'<td class="num">'+(b.bill===false?'<span class="chip c-no">CMA 유형 아님</span>':cellRate(b.bill))+'</td>'
   +'<td>'+(BILL_LIC[b.id]||'<span class="chip c-need">미인가</span>')+'</td>'
-  +'<td>'+(b.billNote||(b.bill&&b.bill.d?'기준일 '+b.bill.d:'')+(b.bill&&b.bill.s?' · 자동매수 '+b.bill.s:''))+'</td></tr>').join('')
+  +'<td class="txt">'+(b.billNote||(b.bill&&b.bill.d?'기준일 '+b.bill.d:'')+(b.bill&&b.bill.s?' · 자동매수 '+b.bill.s:''))+'</td></tr>').join('')
   +'<tr data-broker="키움증권"><td class="name">키움증권</td>'
   +'<td class="num"><span class="chip c-no">CMA 미취급</span><span class="sub">발행어음 별도 상품 수시 2.80%</span></td>'
-  +'<td>2025-11-19</td><td>CMA 계좌 자체가 없어 예수금 자동 스윕 불가 · 직접 매수 방식</td></tr>';
+  +'<td>2025-11-19</td><td class="txt">CMA 계좌 자체가 없어 예수금 자동 스윕 불가 · 직접 매수 방식</td></tr>';
 
 // MMW / MMF
 document.getElementById('mmwBody').innerHTML = B.filter(b=>b.mmw!==false||b.mmf!==false).map(b=>{
@@ -913,7 +915,7 @@ document.getElementById('mmwBody').innerHTML = B.filter(b=>b.mmw!==false||b.mmf!
   +'<td class="num">'+(b.mmw===false?'<span class="chip c-no">미취급</span>':cellRate(b.mmw))+'</td>'
   +'<td>'+(b.mmw&&b.mmw.fee?b.mmw.fee:'<span class="dash">–</span>')+(b.mmw&&b.mmw.net?'<span class="sub">차감 후 '+pct(b.mmw.net)+'</span>':'')+'</td>'
   +'<td class="num">'+mf+'</td>'
-  +'<td>'+((b.mmf&&b.mmf.note)?b.mmf.note:'<span class="dash">–</span>')+'</td></tr>';
+  +'<td class="txt">'+((b.mmf&&b.mmf.note)?b.mmf.note:'<span class="dash">–</span>')+'</td></tr>';
 }).join('');
 
 // 종금형
@@ -923,30 +925,30 @@ document.getElementById('jongBody').innerHTML = JONG.map(j=>
   +'<tr data-broker="우리투자증권"><td class="name">RP형 CMA<span class="sub">비교용</span></td>'
   +'<td class="num"><span class="big">2.60%</span><span class="sub">기준일 2026-07-22</span></td>'
   +'<td>확정금리</td><td>자동환매 시</td>'
-  +'<td><span class="chip c-unprot">비보호</span><span class="sub">같은 회사라도 종금형이<br>아니면 보호 안 됨</span></td></tr>';
+  +'<td class="txt"><span class="chip c-unprot">비보호</span><span class="sub">같은 회사라도 종금형이<br>아니면 보호 안 됨</span></td></tr>';
 
 // 한도 함정
 document.getElementById('trapBody').innerHTML = TRAP.map(t=>
   '<tr data-broker="'+t.b+'"><td class="name">'+t.b+'<span class="sub">'+t.p+'</span></td>'
   +'<td class="num"><span class="big">'+t.r+'</span></td>'
   +'<td><span class="chip c-cap">'+t.cap+'</span></td>'
-  +'<td>'+t.over+'</td><td>'+t.cond+'</td></tr>').join('');
+  +'<td class="txt">'+t.over+'</td><td class="txt">'+t.cond+'</td></tr>').join('');
 
 // 수수료
 document.getElementById('feeBody').innerHTML = B.map(b=>
-  '<tr data-broker="'+b.n+'"><td class="name">'+b.n+'</td><td>'
+  '<tr data-broker="'+b.n+'"><td class="name">'+b.n+'</td><td class="txt">'
   +(b.fee==='미확인'?'<span class="chip c-need">미확인</span> <span class="sub">공식 안내 페이지에 요건이 기재돼 있지 않음</span>':b.fee)
   +(b.warn?'<span class="sub">⚠ '+b.warn+'</span>':'')+'</td></tr>').join('');
 
 // 미취급
 document.getElementById('noneBody').innerHTML = NONE.map(x=>
-  '<tr data-broker="'+x.n+'"><td class="name">'+x.n+'</td><td>'+x.why+'</td><td>'+x.alt+'</td>'
+  '<tr data-broker="'+x.n+'"><td class="name">'+x.n+'</td><td class="txt">'+x.why+'</td><td class="txt">'+x.alt+'</td>'
   +'<td>'+(x.prot?'<span class="chip c-prot">보호 1억원</span><span class="sub">투자자예탁금</span>':'<span class="chip c-unprot">비보호</span>')+'</td></tr>').join('');
 
 // 링크
 document.getElementById('linkBody').innerHTML = B.map(b=>
   '<tr data-broker="'+b.n+'"><td class="name">'+b.n+'</td>'
-  +'<td><a href="'+b.url+'" target="_blank" rel="noopener" style="color:var(--brown);word-break:break-all">'+b.url+'</a></td></tr>').join('');
+  +'<td class="txt"><a href="'+b.url+'" target="_blank" rel="noopener" style="color:var(--brown);word-break:break-all">'+b.url+'</a></td></tr>').join('');
 
 /* ===== 정렬 ===== */
 function val(b,key){

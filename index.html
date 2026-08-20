@@ -173,6 +173,8 @@ tbody tr:hover td.col-best{background:#F2DBCC}
 td.name{font-weight:900;white-space:nowrap}
 td.num{font-variant-numeric:tabular-nums;font-weight:900;white-space:nowrap}
 td.num .big{font-size:16.5px}
+/* 숫자 칸은 nowrap이지만 각주는 길어질 수 있으므로 줄바꿈을 허용한다 (칸 밖으로 튀어나가는 것 방지) */
+td.num .sub{white-space:normal}
 .sub{display:block;font-size:11.5px;font-weight:600;color:var(--ink-mute);margin-top:2px;line-height:1.4}
 .dash{color:var(--ink-mute);font-weight:600}
 
@@ -308,7 +310,7 @@ footer{
     </div>
   </div>
   <div class="scope-foot">
-    표시된 금리에 <strong>금액 한도가 붙는 경우가 많습니다.</strong> 미래에셋 네이버통장 2.65%는 1,000만원까지, 신한 카드우대 2.6%는 예치금 1,000만원 한정입니다.<br>한도를 넘으면 기본금리로 떨어지니 <a href="#trap" style="color:var(--brown);font-weight:800">한도 표</a>를 함께 봐주세요.<br>법인 계좌·세금(이자소득세 15.4%)·외화 CMA는 다루지 않습니다.
+    표시된 금리에 <strong>금액 한도가 붙는 경우가 많습니다.</strong><br>미래에셋 네이버통장 2.65%는 1,000만원까지, 신한 카드우대 2.6%는 예치금 1,000만원 한정입니다.<br>한도를 넘으면 기본금리로 떨어지니 <a href="#trap" style="color:var(--brown);font-weight:800">한도 표</a>를 함께 봐주세요.<br>법인 계좌·세금(이자소득세 15.4%)·외화 CMA는 다루지 않습니다.
   </div>
 </div>
 
@@ -340,7 +342,7 @@ footer{
     </table>
   </div>
   <div class="note alert">
-    <strong>예금자보호 한도는 2025-09-01부터 1인당 1억원</strong>입니다(기존 5,000만원에서 상향). 다만 <strong>CMA·RP·발행어음은 전부 보호 대상이 아닙니다.</strong> 증권사가 파산하면 원금을 잃을 수 있고, 이 표에서 예외는 우리투자증권 종금형 3종뿐입니다.<br>반대로 CMA에 넣지 않고 계좌에 그냥 둔 현금(투자자예탁금)은 보호 대상입니다.
+    <strong>예금자보호 한도는 2025-09-01부터 1인당 1억원</strong>입니다(기존 5,000만원에서 상향). 다만 <strong>CMA·RP·발행어음은 전부 보호 대상이 아닙니다.</strong><br>증권사가 파산하면 원금을 잃을 수 있고, 이 표에서 예외는 우리투자증권 종금형 3종뿐입니다.<br>반대로 CMA에 넣지 않고 계좌에 그냥 둔 현금(투자자예탁금)은 보호 대상입니다.
   </div>
 </section>
 
@@ -422,8 +424,8 @@ footer{
   <div class="note alert">
     <strong>혼동하기 쉬운 두 가지를 정리합니다.</strong>
     <ul>
-      <li><strong>키움증권</strong>은 발행어음 인가는 받았지만(2025-11-19) <strong>CMA 계좌 자체를 취급하지 않습니다.</strong> 인터넷에 도는 "키움 2.8%"는 CMA가 아니라 별도 발행어음 상품이고, 예수금 자동 스윕도 없어 직접 매수해야 합니다.</li>
-      <li><strong>신한투자증권</strong>도 인가를 받았고(2025-12-17) 'Premier 발행어음'(수시형 2.7%)을 팔지만, <strong>CMA 유형으로는 편입하지 않았습니다.</strong> 신한 CMA는 RP·MMF·MMW 3종입니다.</li>
+      <li><strong>키움증권</strong>은 발행어음 인가는 받았지만(2025-11-19) <strong>CMA 계좌 자체를 취급하지 않습니다.</strong><br>인터넷에 도는 "키움 2.8%"는 CMA가 아니라 별도 발행어음 상품이고, 예수금 자동 스윕도 없어 직접 매수해야 합니다.</li>
+      <li><strong>신한투자증권</strong>도 인가를 받았고(2025-12-17) 'Premier 발행어음'(수시형 2.7%)을 팔지만, <strong>CMA 유형으로는 편입하지 않았습니다.</strong><br>신한 CMA는 RP·MMF·MMW 3종입니다.</li>
       <li><strong>삼성증권</strong>은 종투사 지정은 받았으나 단기금융업 인가는 아직 없습니다.<br>2026-07-31 제재 수위가 기관경고로 확정되며 결격사유가 풀려 <strong>2026년 9월 정례회의 결론이 전망</strong>됩니다.</li>
     </ul>
   </div>
@@ -432,7 +434,7 @@ footer{
 <!-- MMW / MMF -->
 <section id="mmw">
   <h2>MMW형 · MMF형<span>실적배당</span></h2>
-  <p class="desc">둘 다 <strong>확정금리가 아닙니다.</strong> MMW형은 한국증권금융에 예치하는 투자일임(랩)이라 매 영업일 정산되는 일복리 구조이고, MMF형은 단기금융펀드라 기준가로 움직입니다.<br>그래서 상당수 증권사가 아예 수치를 고시하지 않습니다.</p>
+  <p class="desc">둘 다 <strong>확정금리가 아닙니다.</strong><br>MMW형은 한국증권금융에 예치하는 투자일임(랩)이라 매 영업일 정산되는 일복리 구조입니다.<br>MMF형은 단기금융펀드라 기준가로 움직입니다.<br>그래서 상당수 증권사가 아예 수치를 고시하지 않습니다.</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:17%"><col style="width:23%"><col style="width:15%"><col style="width:15%"><col style="width:30%"></colgroup>
@@ -450,7 +452,7 @@ footer{
     <strong>MMW형이 대부분 2.62%로 같은 이유.</strong> 이 유형은 고객 자금을 전부 <strong>한국증권금융</strong>에 예치합니다.<br>운용처가 한 곳이니 증권사가 달라도 수익률이 수렴합니다.<br>한국증권금융 수시입출식 예수금 고시금리는 2026-07-20부터 <strong>연 2.43%</strong>이고(2.18%에서 인상), 여기에 비공시 우대금리가 얹혀 2.62%가 되는 구조로 보입니다.<br><strong>차이는 각 사 랩보수에서만 납니다</strong> — 삼성·메리츠·유안타 0.05%, 대신·유진 0.03%, 하나 0.1%.
   </div>
   <div class="note alert">
-    <strong>한화투자증권 MMW형은 예외적으로 낮습니다.</strong> CMA-MMW가 개인 2.09%인데, 같은 회사의 <strong>증금형 MMW(CMA 아님)는 2.54%</strong>로 45bp 차이가 납니다.<br>이름이 비슷해 혼동하기 쉬운 지점입니다.
+    <strong>한화투자증권 MMW형은 예외적으로 낮습니다.</strong><br>CMA-MMW가 개인 2.09%인데, 같은 회사의 <strong>증금형 MMW(CMA 아님)는 2.54%</strong>로 45bp 차이가 납니다.<br>이름이 비슷해 혼동하기 쉬운 지점입니다.
   </div>
 </section>
 
@@ -466,7 +468,7 @@ footer{
     </table>
   </div>
   <div class="note alert">
-    <strong>홈페이지 배너 숫자를 그대로 믿으면 안 됩니다.</strong> 조사 시점 우리투자증권 홈페이지 배너는 CMA Note를 "최고 연 3.7%", CMA를 "최고 연 3%"로 표기하고 있으나, 같은 페이지의 <strong>금리안내 표(기준일 2026-08-19)는 각각 3.60% / 2.90%</strong>입니다.<br>이 표에는 금리안내 표를 정본으로 반영했습니다.
+    <strong>홈페이지 배너 숫자를 그대로 믿으면 안 됩니다.</strong><br>조사 시점 우리투자증권 홈페이지 배너는 CMA Note를 "최고 연 3.7%", CMA를 "최고 연 3%"로 표기하고 있으나, 같은 페이지의 <strong>금리안내 표(기준일 2026-08-19)는 각각 3.60% / 2.90%</strong>입니다.<br>이 표에는 금리안내 표를 정본으로 반영했습니다.
   </div>
   <div class="note">
     한편 우리투자증권의 <strong>RP형 CMA(2.6%)는 종금형이 아니라 일반 CMA라 비보호</strong>입니다.<br>같은 증권사 안에서도 유형에 따라 보호 여부가 갈립니다.
@@ -485,7 +487,7 @@ footer{
     </table>
   </div>
   <div class="note">
-    조사 대상 24개사에서 <strong>"한도 없이 연 4~5%" 같은 특판 CMA는 한 건도 확인되지 않았습니다.</strong> 중소형사 특판을 기대하고 찾아봤으나, 진행 중인 CMA 고금리 이벤트가 없었습니다.<br>다만 다올·IBK·DB 3곳은 이벤트 게시판이 열리지 않아 <strong>"없음을 확인"이 아니라 "확인하지 못함"</strong>입니다.
+    조사 대상 24개사에서 <strong>"한도 없이 연 4~5%" 같은 특판 CMA는 한 건도 확인되지 않았습니다.</strong><br>중소형사 특판을 기대하고 찾아봤으나, 진행 중인 CMA 고금리 이벤트가 없었습니다.<br>다만 다올·IBK·DB 3곳은 이벤트 게시판이 열리지 않아 <strong>"없음을 확인"이 아니라 "확인하지 못함"</strong>입니다.
   </div>
 </section>
 
@@ -517,10 +519,10 @@ footer{
     </table>
   </div>
   <div class="note alert">
-    <strong>카카오페이증권 종합계좌 예탁금이용료 연 2.50%는 30만원 이하 구간에만 적용됩니다.</strong> 공시된 표는 30만원 초과 시 초과분이 아니라 <strong>전액이 연 0.15%</strong>로 적용되는 구간별 단일요율 구조입니다.<br>30만원까지의 소액 파킹용으로만 의미가 있습니다.
+    <strong>카카오페이증권 종합계좌 예탁금이용료 연 2.50%는 30만원 이하 구간에만 적용됩니다.</strong><br>공시된 표는 30만원 초과 시 초과분이 아니라 <strong>전액이 연 0.15%</strong>로 적용되는 구간별 단일요율 구조입니다.<br>30만원까지의 소액 파킹용으로만 의미가 있습니다.
   </div>
   <div class="note">
-    <strong>토스·카카오페이의 예탁금은 예금자보호 대상입니다.</strong> CMA가 없다는 게 무조건 불리한 건 아닙니다.<br>금리는 낮지만 1억원까지 보호받는 위탁자예수금이기 때문입니다.
+    <strong>토스·카카오페이의 예탁금은 예금자보호 대상입니다.</strong><br>CMA가 없다는 게 무조건 불리한 건 아닙니다.<br>금리는 낮지만 1억원까지 보호받는 위탁자예수금이기 때문입니다.
   </div>
 </section>
 
@@ -588,9 +590,9 @@ footer{
 
   <h4>비교의 한계</h4>
   <ul>
-    <li><strong>MMW형의 보수 차감 전/후 표기가 회사마다 다릅니다.</strong> 대부분 차감 전을 공시하지만 메리츠·유진은 차감 후를 공시합니다.<br>표에 어느 쪽인지 표기했으나, 같은 기준으로 정렬하면 오해가 생길 수 있습니다.</li>
-    <li><strong>MMF형은 확정금리가 아닙니다.</strong> 현대차증권 MMF 1일 3.28%는 과거 수익률이며, 앞으로 그 금리를 받는다는 뜻이 아닙니다.</li>
-    <li><strong>기존 계좌는 이 표와 다릅니다.</strong> RP형은 매수 시점 금리로 고정되는 구조가 많아(신한 28일, 교보 90일), 지금 보유 중인 계좌의 실제 적용 금리는 별도 확인이 필요합니다.</li>
+    <li><strong>MMW형의 보수 차감 전/후 표기가 회사마다 다릅니다.</strong><br>대부분 차감 전을 공시하지만 메리츠·유진은 차감 후를 공시합니다.<br>표에 어느 쪽인지 표기했으나, 같은 기준으로 정렬하면 오해가 생길 수 있습니다.</li>
+    <li><strong>MMF형은 확정금리가 아닙니다.</strong><br>현대차증권 MMF 1일 3.28%는 과거 수익률이며, 앞으로 그 금리를 받는다는 뜻이 아닙니다.</li>
+    <li><strong>기존 계좌는 이 표와 다릅니다.</strong><br>RP형은 매수 시점 금리로 고정되는 구조가 많아(신한 28일, 교보 90일), 지금 보유 중인 계좌의 실제 적용 금리는 별도 확인이 필요합니다.</li>
   </ul>
 
   <h4>참고한 1차 자료</h4>
@@ -797,8 +799,8 @@ const BILL_LIC = {
 
 const JONG = [
   {n:'우리WON CMA Note',r:'1천만원 이하 2.90%<span class="sub">1천만원 초과 2.70%</span>',t:'변동금리',p:'매월 말 결산<br>익월 5일 (월복리)',c:'19세 이상 개인<br>1인 1계좌 · MTS 전용'},
-  {n:'CMA Note',r:'365일 3.60%<span class="sub">1~89일 2.70 · 90~179일 3.10 · 180~269일 3.40 · 270~364일 3.50</span>',t:'확정금리',p:'인출 시 정산',c:'제한 없음<br>비과세종합저축 가능'},
-  {n:'CMA',r:'365일 2.90%<span class="sub">1~89일 2.60 · 90~179일 2.70 · 180~364일 2.80</span>',t:'실적배당형<br>(변동금리)',p:'인출 시 정산',c:'선입선출<br>비과세종합저축 가능'}
+  {n:'CMA Note',r:'365일 3.60%<span class="sub">1~89일 2.70 · 90~179일 3.10<br>180~269일 3.40 · 270~364일 3.50</span>',t:'확정금리',p:'인출 시 정산',c:'제한 없음<br>비과세종합저축 가능'},
+  {n:'CMA',r:'365일 2.90%<span class="sub">1~89일 2.60 · 90~179일 2.70<br>180~364일 2.80</span>',t:'실적배당형<br>(변동금리)',p:'인출 시 정산',c:'선입선출<br>비과세종합저축 가능'}
 ];
 
 const TRAP = [
@@ -925,7 +927,7 @@ document.getElementById('jongBody').innerHTML = JONG.map(j=>
   +'<tr data-broker="우리투자증권"><td class="name">RP형 CMA<span class="sub">비교용</span></td>'
   +'<td class="num"><span class="big">2.60%</span><span class="sub">기준일 2026-07-22</span></td>'
   +'<td>확정금리</td><td>자동환매 시</td>'
-  +'<td class="txt"><span class="chip c-unprot">비보호</span><span class="sub">같은 회사라도 종금형이<br>아니면 보호 안 됨</span></td></tr>';
+  +'<td><span class="chip c-unprot">비보호</span><span class="sub">같은 회사라도 종금형이<br>아니면 보호 안 됨</span></td></tr>';
 
 // 한도 함정
 document.getElementById('trapBody').innerHTML = TRAP.map(t=>

@@ -161,6 +161,13 @@ thead th:first-child{border-radius:14px 0 0 0}
 thead th:last-child{border-radius:0 14px 0 0}
 tbody tr:last-child td{border-bottom:none}
 tbody tr:hover{background:var(--bg-alt)}
+
+/* 강조 열 — 종합표의 최고 확정금리 */
+th.col-best{background:var(--accent);color:var(--white);border-left:2px solid var(--accent)}
+th.col-best.sortable:hover{background:#C2461F}
+th.col-best.active{background:var(--dark-warm);color:var(--white)}
+td.col-best{background:#F8EAE1;border-left:2px solid var(--accent-soft)}
+tbody tr:hover td.col-best{background:#F2DBCC}
 td.name{font-weight:900;white-space:nowrap}
 td.num{font-variant-numeric:tabular-nums;font-weight:900;white-space:nowrap}
 td.num .big{font-size:16.5px}
@@ -348,7 +355,7 @@ footer{
         <th class="sortable" data-key="bill">발행어음형</th>
         <th class="sortable" data-key="mmw">MMW형</th>
         <th>MMF형</th>
-        <th class="sortable" data-key="best">최고 확정금리</th>
+        <th class="sortable col-best" data-key="best">최고 확정금리</th>
       </tr></thead>
       <tbody id="mainBody"></tbody>
     </table>
@@ -869,7 +876,7 @@ function rowMain(b){
     +'<td class="num">'+bl+'</td>'
     +'<td class="num">'+(b.mmw===false?'<span class="chip c-no">미취급</span>':cellRate(b.mmw))+'</td>'
     +'<td class="num">'+mf+'</td>'
-    +'<td class="num">'+(bs!=null
+    +'<td class="num col-best">'+(bs!=null
         ? '<span class="big">'+pct(bs)+'</span><span class="sub">'+bestType(b)
           +(b.jong!=null?'<br><span class="chip c-prot">예금자보호</span>':'')+'</span>'
         : '<span class="dash">–</span>')+'</td></tr>';

@@ -1,11 +1,11 @@
 {
-  "checked_at": "2026-08-21 08:23 KST",
+  "checked_at": "2026-08-22 08:21 KST",
   "targets": {
     "bok_base_rate": {
       "rates": [
         2.75
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "yuanta": {
       "rates": [
@@ -46,7 +46,7 @@
         3.15,
         3.2
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "sk": {
       "rates": [
@@ -55,13 +55,13 @@
         2.55,
         2.65
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "db": {
       "rates": [
         2.5
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "hana": {
       "rates": [
@@ -69,27 +69,27 @@
         2.55,
         2.62
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "daishin": {
       "rates": [
         2.55,
         2.6
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "ibk": {
       "rates": [
         2.5
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "sangsangin": {
       "rates": [
         2.5,
         4.8
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "wooriib_woncma": {
       "rates": [
@@ -97,7 +97,7 @@
         2.9,
         3.75
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "wooriib_cmanote": {
       "rates": [
@@ -108,14 +108,14 @@
         3.5,
         3.6
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     },
     "shinhan": {
       "rates": [
         0.5,
         2.6
       ],
-      "checked_at": "2026-08-21 08:23 KST"
+      "checked_at": "2026-08-22 08:21 KST"
     }
   }
 }

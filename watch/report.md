@@ -6,7 +6,10 @@
 
 | 대상 | 새로 생긴 값 | 사라진 값 |
 |---|---|---|
-| 🚨 [한국은행 기준금리](https://www.bok.or.kr/portal/singl/baseRate/list.do?dataSeCd=01&menuNo=200643) | 3 | 2.75 |
+| 🚨 [유안타증권 금리 데이터](https://www.myasset.com/myasset/code/prodRate.tbl) | 2.75, 2.8, 2.82 | 2.35, 2.57, 2.62 |
+| [SK증권 CMA 금리 API](https://www.sks.co.kr/main/product/rp/MAGIC_CMA_DATA_Q.cmd) | 2.7, 2.8, 2.9 | 2.45, 2.55, 2.65 |
+| [IBK투자증권 CMA 금리](https://www.ibks.com/fundproduct/cma/cmaservice_Rate.do) | 2.75 | 2.5 |
+| [상상인증권 CMA](https://www.sangsanginib.com/info/cmaView) | 2.75 | 2.5 |
 
 > 숫자 지문 비교라 **오탐이 있을 수 있습니다.** 링크를 열어 실제 금리와 기준일을 직접 확인하세요.
 > 페이지 표시값이 최신이 아닌 경우가 있으니, 공지·고시로 교차 확인하세요. (상세는 로컬 갱신가이드 3장)
@@ -14,8 +17,6 @@
 ## 수집 실패
 
 - 하나증권 CMA — fetch failed
-- IBK투자증권 CMA 금리 — fetch failed
-- 신한투자증권 CMA — fetch failed
 
 > 실패한 대상은 이전 값을 유지했습니다. 반복되면 URL이 바뀐 것일 수 있습니다.
 

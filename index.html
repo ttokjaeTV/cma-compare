@@ -88,13 +88,26 @@ body{
 .ico-yt{background:var(--white);color:var(--accent)}
 .ico-n{background:#03C75A;color:#fff;font-size:12px}
 
-/* 범위 박스 */
+/* 범위 박스 — 접어 두고 클릭하면 열린다 */
 .scope{
   background:var(--white);border:2px solid var(--accent);border-radius:20px;
-  padding:30px 34px;margin-bottom:22px;
+  padding:0;margin-bottom:22px;
 }
-.scope h3{font-size:21px;font-weight:900;letter-spacing:-.6px;margin-bottom:20px}
-.scope h3 mark{background:var(--accent-soft);color:var(--ink);padding:2px 7px;border-radius:6px}
+.scope > summary{
+  list-style:none;cursor:pointer;padding:18px 24px;
+  display:flex;align-items:center;gap:10px;
+  font-size:16px;font-weight:800;letter-spacing:-.4px;color:var(--ink);
+}
+.scope > summary::-webkit-details-marker{display:none}
+.scope > summary mark{background:var(--accent-soft);color:var(--ink);padding:2px 7px;border-radius:6px}
+.scope > summary .chev{
+  margin-left:auto;flex:none;font-size:12px;font-weight:800;color:var(--accent);
+  border:1.5px solid var(--accent);border-radius:999px;padding:4px 12px;white-space:nowrap;
+}
+.scope[open] > summary .chev::after{content:'접기'}
+.scope:not([open]) > summary .chev::after{content:'펼치기'}
+.scope > summary:hover .chev{background:var(--accent-soft)}
+.scope-body{padding:2px 24px 24px}
 .scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .scope-card{border-radius:14px;padding:20px 22px}
 .scope-card.yes{background:var(--bg-alt)}
@@ -251,8 +264,10 @@ footer{
   .tipbar p{font-size:14px;min-width:0}
   .btns{width:100%;gap:8px}
   .btn{flex:1;justify-content:center;padding:12px 10px;font-size:13.5px}
-  .scope{padding:22px 18px}
-  .scope h3{font-size:18px;margin-bottom:16px}
+  .scope{padding:0}
+  .scope > summary{padding:15px 16px;font-size:14.5px;gap:8px}
+  .scope > summary .chev{padding:3px 10px;font-size:11.5px}
+  .scope-body{padding:0 16px 18px}
   .scope-card{padding:17px 18px}
   .scope-grid{grid-template-columns:1fr;gap:14px}
   section h2{font-size:20px}
@@ -282,43 +297,35 @@ footer{
 <header class="hero">
   <span class="eyebrow"><i></i>증권사 CMA 금리 비교표</span>
   <h1>CMA 금리,<br><mark>유형별로</mark> 다 모았습니다</h1>
-  <p class="lead">국내 24개 증권사의 <b>개인 CMA</b> 기준<br>
-    RP형 · 발행어음형 · MMW형 · MMF형 · 종금형 금리를<br>
-    각 사 공식 고시에서 그대로 옮겨 한 표에 정리했습니다.</p>
+  <p class="lead">국내 24개 증권사의 <b>개인 CMA</b>를 RP형 · 발행어음형 · MMW형 · MMF형 · 종금형까지 한 표에.</p>
   <div class="datebadge">데이터 확인일 <b>2026년 9월 1일</b> · 개인 기준 · <b>세전 연이율</b> · 기준금리 3.00%</div>
-  <p class="hero-note">※ <b>지금 CMA를 새로 여는 경우</b>를 기준으로 정리한 표입니다. 법인 계좌 · 외화 CMA는 제외했습니다.<br><b>2026년 8월 27일 금통위에서 기준금리가 2.75% → 3.00%로 인상</b>되어, 8/28~9/1에 거의 모든 증권사 금리가 다시 올랐습니다. 이 표는 그 인상분을 반영한 것입니다.<br>다음 금통위는 <b>2026년 10월 22일</b>입니다.</p>
+  <p class="hero-note"><b>8월 27일 금통위에서 기준금리가 2.75% → 3.00%로 인상</b>되어 8/28~9/1에 거의 모든 증권사 금리가 올랐습니다. 그 인상분을 반영한 표입니다.</p>
 </header>
 
-<div class="tipbar">
-  <p>💡 <strong>금리보다 유형이 먼저입니다.</strong> CMA·ETF·연금계좌 이야기는 똑재TV에서 매주 만나보세요.</p>
-  <div class="btns">
-    <a class="btn btn-yt" href="https://www.youtube.com/@ttok_jae" target="_blank" rel="noopener"><span class="ico ico-yt">▶</span>똑재TV 구독하기</a>
-    <a class="btn btn-cafe" href="https://cafe.naver.com/ttokjae" target="_blank" rel="noopener"><span class="ico ico-n">N</span>평생 ETF 투자 카페</a>
-  </div>
-</div>
-
-<div class="scope">
-  <h3>📌 이 표는 <mark>지금 CMA를 새로 여는 분</mark> 기준입니다</h3>
-  <div class="scope-grid">
-    <div class="scope-card yes">
-      <span class="lbl">이 표로 알 수 있는 것</span>
-      <p>지금 새로 개설하는 <strong>개인 CMA</strong>에 적용되는 세전 기본금리와, 유형별 성격·예금자보호 여부입니다.<br>어느 증권사에서 <strong>어떤 유형</strong>을 고를지 비교하는 용도입니다.</p>
+<details class="scope">
+  <summary>📌 이 표는 <mark>지금 CMA를 새로 여는 분</mark> 기준입니다<span class="chev"></span></summary>
+  <div class="scope-body">
+    <div class="scope-grid">
+      <div class="scope-card yes">
+        <span class="lbl">이 표로 알 수 있는 것</span>
+        <p>지금 새로 개설하는 <strong>개인 CMA</strong>에 적용되는 세전 기본금리와, 유형별 성격·예금자보호 여부입니다.<br>어느 증권사에서 <strong>어떤 유형</strong>을 고를지 비교하는 용도입니다.</p>
+      </div>
+      <div class="scope-card no">
+        <span class="lbl">이 표로 알 수 없는 것</span>
+        <p><strong>이미 갖고 계신 계좌의 실제 적용 금리</strong>입니다.<br>RP형은 매수 시점 금리로 묶이는 구조여서(신한 28일·교보 90일), 금리가 올라도 <strong>재매수 전까지는 옛 금리가 그대로</strong> 적용됩니다.</p>
+      </div>
     </div>
-    <div class="scope-card no">
-      <span class="lbl">이 표로 알 수 없는 것</span>
-      <p><strong>이미 갖고 계신 계좌의 실제 적용 금리</strong>입니다.<br>RP형은 매수 시점 금리로 묶이는 구조여서(신한 28일·교보 90일), 금리가 올라도 <strong>재매수 전까지는 옛 금리가 그대로</strong> 적용됩니다.</p>
+    <div class="scope-foot">
+      표시된 금리에 <strong>금액 한도가 붙는 경우가 많습니다.</strong><br>미래에셋 네이버통장 2.80%는 1,000만원까지, 신한 카드우대 2.60%는 예치금 1,000만원 한정입니다.<br>한도를 넘으면 기본금리로 떨어지니 <a href="#trap" style="color:var(--brown);font-weight:800">한도 표</a>를 함께 봐주세요.<br>법인 계좌·세금(이자소득세 15.4%)·외화 CMA는 다루지 않습니다.<br>다음 금통위는 <strong>2026년 10월 22일</strong>이고, 그 뒤에는 금리가 다시 일제히 바뀝니다.
     </div>
   </div>
-  <div class="scope-foot">
-    표시된 금리에 <strong>금액 한도가 붙는 경우가 많습니다.</strong><br>미래에셋 네이버통장 2.65%는 1,000만원까지, 신한 카드우대 2.6%는 예치금 1,000만원 한정입니다.<br>한도를 넘으면 기본금리로 떨어지니 <a href="#trap" style="color:var(--brown);font-weight:800">한도 표</a>를 함께 봐주세요.<br>법인 계좌·세금(이자소득세 15.4%)·외화 CMA는 다루지 않습니다.
-  </div>
-</div>
+</details>
 
 <nav class="nav">
   <div class="nav-inner">
     <input id="search" type="text" placeholder="증권사명 검색 (예: 미래에셋)" autocomplete="off">
-    <a href="#types">유형 이해</a>
     <a href="#main">종합표</a>
+    <a href="#types">유형 이해</a>
     <a href="#rp">RP형</a>
     <a href="#bill">발행어음형</a>
     <a href="#mmw">MMW·MMF형</a>
@@ -329,22 +336,6 @@ footer{
     <a href="#links">확인 링크</a>
   </div>
 </nav>
-
-<!-- 유형 이해 -->
-<section id="types">
-  <h2>CMA 5가지 유형<span>먼저 읽기</span></h2>
-  <p class="desc">CMA는 계좌 이름일 뿐이고, 실제로 돈이 어디에 들어가는지는 유형이 결정합니다.<br>금리만 비교하면 성격이 다른 상품을 나란히 놓게 됩니다.</p>
-  <div class="table-wrap">
-    <table>
-      <colgroup><col style="width:15%"><col style="width:40%"><col style="width:25%"><col style="width:20%"></colgroup>
-      <thead><tr><th>유형</th><th>돈이 들어가는 곳</th><th>금리 성격</th><th>예금자보호</th></tr></thead>
-      <tbody id="typeBody"></tbody>
-    </table>
-  </div>
-  <div class="note alert">
-    <strong>예금자보호 한도는 2025-09-01부터 1인당 1억원</strong>입니다(기존 5,000만원에서 상향). 다만 <strong>CMA·RP·발행어음은 전부 보호 대상이 아닙니다.</strong><br>증권사가 파산하면 원금을 잃을 수 있고, 이 표에서 예외는 우리투자증권 종금형 3종뿐입니다.<br>반대로 CMA에 넣지 않고 계좌에 그냥 둔 현금(투자자예탁금)은 보호 대상입니다.
-  </div>
-</section>
 
 <!-- 종합표 -->
 <section id="main">
@@ -375,12 +366,36 @@ footer{
   </div>
 </section>
 
+<!-- 유형 이해 -->
+<section id="types">
+  <h2>CMA 5가지 유형<span>표가 헷갈리면 여기</span></h2>
+  <p class="desc">CMA는 계좌 이름일 뿐이고, 실제로 돈이 어디에 들어가는지는 유형이 결정합니다.<br>금리만 비교하면 성격이 다른 상품을 나란히 놓게 됩니다.</p>
+  <div class="table-wrap">
+    <table>
+      <colgroup><col style="width:15%"><col style="width:40%"><col style="width:25%"><col style="width:20%"></colgroup>
+      <thead><tr><th>유형</th><th>돈이 들어가는 곳</th><th>금리 성격</th><th>예금자보호</th></tr></thead>
+      <tbody id="typeBody"></tbody>
+    </table>
+  </div>
+  <div class="note alert">
+    <strong>예금자보호 한도는 2025-09-01부터 1인당 1억원</strong>입니다(기존 5,000만원에서 상향). 다만 <strong>CMA·RP·발행어음은 전부 보호 대상이 아닙니다.</strong><br>증권사가 파산하면 원금을 잃을 수 있고, 이 표에서 예외는 우리투자증권 종금형 3종뿐입니다.<br>반대로 CMA에 넣지 않고 계좌에 그냥 둔 현금(투자자예탁금)은 보호 대상입니다.
+  </div>
+</section>
+
 <div class="insight">
   <span class="tag">KEY INSIGHT</span>
   <h3>금리 숫자 하나만 보면 세 군데서 틀립니다</h3>
-  <p><strong>첫째, 한도.</strong> 미래에셋 네이버통장 2.65%는 <strong>1,000만원까지만</strong>이고 초과분은 2.10%로 떨어집니다.<br>신한 카드우대 최고 2.6%도 <strong>예치금 1,000만원 이하</strong> 한정에 전월 카드실적 100만원 조건이 붙습니다.<br>우리WON CMA Note 2.90%도 1,000만원 초과분은 2.70%입니다.</p>
-  <p><strong>둘째, 보수 차감 여부.</strong> MMW형은 한국증권금융 예치라 대부분 <strong>차감 전 2.62%</strong>로 같습니다.<br>그런데 메리츠는 <strong>차감 후 2.57%</strong>를 공시합니다.<br>나란히 놓으면 메리츠가 낮아 보이지만 실제 랩보수는 0.05%로 삼성과 같습니다.<br>반대로 하나는 랩보수가 0.1%라 차감 후가 더 낮습니다.</p>
+  <p><strong>첫째, 한도.</strong> 미래에셋 네이버통장 2.80%는 <strong>1,000만원까지만</strong>이고 초과분은 2.25%로 떨어집니다.<br>신한 카드우대 최고 2.60%도 <strong>예치금 1,000만원 이하</strong> 한정에 전월 카드실적 100만원 조건이 붙습니다.<br>우리WON CMA Note 2.90%도 1,000만원 초과분은 2.70%입니다.</p>
+  <p><strong>둘째, 보수 차감 여부.</strong> MMW형은 한국증권금융 예치라 <strong>차감 전 2.87%</strong>로 거의 전부 같습니다.<br>그런데 메리츠는 <strong>차감 후 2.82%</strong>, 미래에셋은 <strong>차감 후 2.72%</strong>를 공시합니다.<br>나란히 놓으면 이쪽이 낮아 보이지만, 실제로는 <strong>랩보수만큼만 차이</strong>가 납니다 — 메리츠 0.05%, 미래에셋 0.15%.<br>차감 전 숫자만 보면 전부 동률이라 비교가 안 되고, 섞어서 정렬하면 순위가 뒤집힙니다.</p>
   <p><strong>셋째, 금리가 언제 반영되는지.</strong> 신한 RP형은 매수 시점 금리로 <strong>최대 28일 고정</strong>이라 인상돼도 재매수 전엔 옛 금리입니다.<br>교보는 <strong>90일 고정</strong>으로 더 깁니다.<br>반면 유진 자유형 CMA는 기존 잔액에도 인상분이 자동 적용됩니다.<br>같은 2%대라도 실제로 받는 시점이 다릅니다.</p>
+</div>
+
+<div class="tipbar">
+  <p>💡 <strong>금리보다 유형이 먼저입니다.</strong> CMA·ETF·연금계좌 이야기는 똑재TV에서 매주 만나보세요.</p>
+  <div class="btns">
+    <a class="btn btn-yt" href="https://www.youtube.com/@ttok_jae" target="_blank" rel="noopener"><span class="ico ico-yt">▶</span>똑재TV 구독하기</a>
+    <a class="btn btn-cafe" href="https://cafe.naver.com/ttokjae" target="_blank" rel="noopener"><span class="ico ico-n">N</span>평생 ETF 투자 카페</a>
+  </div>
 </div>
 
 <!-- RP형 -->

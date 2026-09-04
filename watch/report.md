@@ -1,6 +1,8 @@
 ## 수집 실패
 
 - SK증권 CMA 금리 API — fetch failed
+- 하나증권 CMA — fetch failed
+- 신한투자증권 CMA — fetch failed
 
 > 실패한 대상은 이전 값을 유지했습니다. 반복되면 URL이 바뀐 것일 수 있습니다.
 

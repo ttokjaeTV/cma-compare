@@ -1,6 +1,5 @@
 ## 수집 실패
 
-- SK증권 CMA 금리 API — fetch failed
 - 하나증권 CMA — fetch failed
 - 신한투자증권 CMA — fetch failed
 

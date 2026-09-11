@@ -1,11 +1,11 @@
 {
-  "checked_at": "2026-09-10 09:50 KST",
+  "checked_at": "2026-09-11 09:49 KST",
   "targets": {
     "bok_base_rate": {
       "rates": [
         3
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "yuanta": {
       "rates": [
@@ -46,7 +46,7 @@
         3.55,
         3.6
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "sk": {
       "rates": [
@@ -55,13 +55,13 @@
         2.8,
         2.9
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "db": {
       "rates": [
         2.75
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "hana": {
       "rates": [
@@ -76,7 +76,7 @@
         2.75,
         2.8
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "ibk": {
       "rates": [
@@ -89,7 +89,7 @@
         2.75,
         4.8
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "wooriib_woncma": {
       "rates": [
@@ -97,7 +97,7 @@
         3,
         3.75
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "wooriib_cmanote": {
       "rates": [
@@ -108,7 +108,7 @@
         3.6,
         3.7
       ],
-      "checked_at": "2026-09-10 09:50 KST"
+      "checked_at": "2026-09-11 09:49 KST"
     },
     "shinhan": {
       "rates": [

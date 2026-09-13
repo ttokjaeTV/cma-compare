@@ -1,11 +1,11 @@
 {
-  "checked_at": "2026-09-12 09:54 KST",
+  "checked_at": "2026-09-13 09:37 KST",
   "targets": {
     "bok_base_rate": {
       "rates": [
         3
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "yuanta": {
       "rates": [
@@ -46,7 +46,7 @@
         3.55,
         3.6
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "sk": {
       "rates": [
@@ -55,13 +55,13 @@
         2.8,
         2.9
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "db": {
       "rates": [
         2.75
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "hana": {
       "rates": [
@@ -69,42 +69,53 @@
         2.8,
         2.87
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "daishin": {
       "rates": [
         2.75,
         2.8
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "ibk": {
       "rates": [
         2.75
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "sangsangin": {
       "rates": [
         2.75,
         4.8
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "wooriib_woncma": {
-      "rates": [],
-      "checked_at": "2026-09-12 09:54 KST"
+      "rates": [
+        2.8,
+        3,
+        3.75
+      ],
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "wooriib_cmanote": {
-      "rates": [],
-      "checked_at": "2026-09-12 09:54 KST"
+      "rates": [
+        2.9,
+        3,
+        3.2,
+        3.5,
+        3.6,
+        3.7
+      ],
+      "checked_at": "2026-09-13 09:37 KST"
     },
     "shinhan": {
       "rates": [
         0.5,
         2.6
       ],
-      "checked_at": "2026-09-12 09:54 KST"
+      "checked_at": "2026-09-13 09:37 KST"
     }
   }
 }

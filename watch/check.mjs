@@ -73,8 +73,11 @@ async function grab(t) {
         'Accept': 'text/html,application/json,*/*',
         'Accept-Language': 'ko-KR,ko;q=0.9',
         ...(t.method === 'POST' ? { 'Content-Type': 'application/x-www-form-urlencoded' } : {}),
+        // t.headers — Referer·X-Requested-With를 요구하는 엔드포인트(한국증권금융 등)
+        ...(t.headers || {}),
       },
-      body: t.method === 'POST' ? '' : undefined,
+      // t.body — form-urlencoded 본문. 없으면 기존처럼 빈 본문
+      body: t.method === 'POST' ? (t.body || '') : undefined,
       signal: ctrl.signal,
       redirect: 'follow',
     });
@@ -110,8 +113,25 @@ const next = { checked_at: now, targets: {} };
 const changed = [];
 const errors = [];
 
+/**
+ * 일시적 실패 재시도.
+ * NH 본사 페이지처럼 연속 호출 시 빈 응답을 주는 곳, 간헐적 네트워크 실패가 실재한다.
+ * 2026-09-18 실측: 하나·신한·KB해외·유진이 리포트에 fetch failed로 찍혔으나 모두 URL은 정상이었다.
+ * 헛알림(=조사자가 멀쩡한 페이지를 뒤지게 만드는 비용)을 줄이기 위해 한 번 더 시도한다.
+ */
+async function grabWithRetry(t) {
+  const first = await grab(t);
+  const failed = first.error || (first.rates && first.rates.length === 0);
+  if (!failed) return first;
+  await new Promise(r => setTimeout(r, 4000));
+  const second = await grab(t);
+  const stillFailed = second.error || (second.rates && second.rates.length === 0);
+  if (!stillFailed) console.log(`  ↻ ${t.label} — 재시도 성공`);
+  return second;
+}
+
 for (const t of TARGETS) {
-  const r = await grab(t);
+  const r = await grabWithRetry(t);
   const prev = base.targets?.[t.id];
 
   if (r.error) {
@@ -146,8 +166,23 @@ const t1 = changed.filter(c => c.tier === 1);
 const lines = [];
 
 if (t1.length) {
-  lines.push('## 🚨 기준금리·증권금융 고시가 바뀌었습니다', '');
-  lines.push('**2~4영업일 내 전 증권사 CMA 금리가 따라 움직입니다. 전수 갱신을 준비하세요.**', '');
+  // tier 1은 두 갈래다 — 지표(기준금리·고시금리)와 발행어음·종금 조달금리.
+  // 2026-09 실측: 기준금리가 그대로여도 발행어음·종금형은 따로 움직였다.
+  const LEAD = new Set(['bok_base_rate', 'ksfc_rate']);
+  const lead = t1.filter(c => LEAD.has(c.id));
+  const fund = t1.filter(c => !LEAD.has(c.id));
+
+  if (lead.length) {
+    lines.push('## 🚨 기준금리·증권금융 고시가 바뀌었습니다', '');
+    lines.push('**2~4영업일 내 전 증권사 RP형·MMW형이 따라 움직입니다. 전수 갱신을 준비하세요.**', '');
+    lines.push('> ⚠ 한국증권금융은 「수시입출식」과 「거치식」을 따로 고시합니다.', '');
+    lines.push('> 이 감시는 수시입출식(증권사 CMA-MMW의 기초)을 봅니다. 거치식만 바뀐 경우 MMW는 움직이지 않습니다.', '');
+  }
+  if (fund.length) {
+    lines.push('## 🚨 발행어음·종금형 조달금리가 바뀌었습니다', '');
+    lines.push('**금통위와 무관하게 각 사가 자체적으로 올리고 내리는 구간입니다.**', '');
+    lines.push('해당 증권사부터 확인하고, 같은 시기에 다른 발행어음 취급사도 움직였는지 함께 보세요 — 2026-09에 한국투자(9/4)·하나(9/7)·우리투자(9/3·9/10)가 순차적으로 올랐습니다.', '');
+  }
 }
 if (changed.length) {
   lines.push('## 변경 감지', '');

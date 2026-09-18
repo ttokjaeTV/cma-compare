@@ -8,11 +8,60 @@
       "mode": "first"
     },
     {
+      "id": "ksfc_rate",
+      "label": "한국증권금융 수시입출식 고시금리",
+      "tier": 1,
+      "url": "https://www.ksfc.co.kr:4443/product/rate/ajax/getDepositExpireAndRate.do",
+      "method": "POST",
+      "body": "prdMclcd=103&prcd=129",
+      "headers": {
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": "https://www.ksfc.co.kr:4443/product/rate/popup/deposit.do"
+      }
+    },
+    {
       "id": "yuanta",
       "label": "유안타증권 금리 데이터",
       "tier": 1,
       "url": "https://www.myasset.com/myasset/code/prodRate.tbl",
       "encoding": "euc-kr"
+    },
+    {
+      "id": "kis_bill",
+      "label": "한국투자증권 발행어음 변경이력",
+      "tier": 1,
+      "url": "https://www.truefriend.com/main/mall/opencma/_view/CmaInfo_TF02bb010000_Pop.jsp?gubun=3"
+    },
+    {
+      "id": "hana_bill",
+      "label": "하나증권 발행어음",
+      "tier": 1,
+      "url": "https://www.hanaw.com/main/finance/drownBill/NS_010100_P1S1.cmd"
+    },
+    {
+      "id": "kb_cma",
+      "label": "KB증권 CMA 금리 JSON",
+      "tier": 1,
+      "url": "https://www.kbsec.com/ndataweb/json/main/rate_manage_cma.json"
+    },
+    {
+      "id": "wooriib_rp",
+      "label": "우리투자증권 RP형 CMA",
+      "tier": 1,
+      "url": "https://fundsupermarket.wooriib.com/fmc/FMC3090020/selectRpInfo.do",
+      "method": "POST"
+    },
+    {
+      "id": "hana",
+      "label": "하나증권 CMA (RP·MMW)",
+      "tier": 2,
+      "url": "https://www.hanaw.com/main/finance/CMA/FP_040101_P.cmd"
+    },
+    {
+      "id": "shinhan",
+      "label": "신한투자증권 CMA 실시간",
+      "tier": 2,
+      "url": "https://www.shinhansec.com/siw/wealth-management/cma/info/data.do"
     },
     {
       "id": "sk",
@@ -26,12 +75,6 @@
       "tier": 2,
       "url": "https://www.dbsec.co.kr/online/accservice/getCMAInterestRate.do",
       "method": "POST"
-    },
-    {
-      "id": "hana",
-      "label": "하나증권 CMA",
-      "tier": 1,
-      "url": "https://www.hanaw.com/main/finance/CMA/FP_040101_P.cmd"
     },
     {
       "id": "daishin",
@@ -65,12 +108,6 @@
       "tier": 2,
       "url": "https://securities.wooriib.com/HPKOFngoAction.do?method=hpcmanoteinf&BOARD_ID=11&BOARD_ID2=12",
       "legacyTls": true
-    },
-    {
-      "id": "shinhan",
-      "label": "신한투자증권 CMA",
-      "tier": 2,
-      "url": "https://www.shinhansec.com/siw/wealth-management/cma/info/view.do"
     }
   ]
 }

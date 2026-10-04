@@ -100,6 +100,7 @@ body{
   font-size:16px;font-weight:800;letter-spacing:-.4px;color:var(--ink);
 }
 .scope > summary::-webkit-details-marker{display:none}
+.scope > summary .sum-txt{flex:1;min-width:0;line-height:1.5} /* 글자·mark가 flex 칸으로 쪼개지지 않게 한 덩어리로 */
 .scope > summary mark{background:var(--accent-soft);color:var(--ink);padding:2px 7px;border-radius:6px}
 .scope > summary .chev{
   margin-left:auto;flex:none;font-size:12px;font-weight:800;color:var(--accent);
@@ -282,6 +283,11 @@ footer{
   #search{order:-1;flex-basis:100%}
   .nav a{font-size:12.5px;padding:7px 11px}
 }
+
+/* iOS Safari: 글자 16px 미만 입력칸은 누를 때 화면이 자동 확대됨 → 모바일에서 16px 보장 */
+@media (max-width: 768px) {
+  input[type=text], input[type=number], input[type=search], input[type=tel], input:not([type]), select, textarea { font-size: 16px !important; }
+}
 </style>
 </head>
 <body>
@@ -308,7 +314,7 @@ footer{
 </header>
 
 <details class="scope">
-  <summary>📌 이 표는 <mark>지금 CMA를 새로 여는 분</mark> 기준입니다<span class="chev"></span></summary>
+  <summary><span class="sum-txt">📌 이 표는 <mark>지금 CMA를 새로 여는 분</mark> 기준입니다</span><span class="chev"></span></summary>
   <div class="scope-body">
     <div class="scope-grid">
       <div class="scope-card yes">

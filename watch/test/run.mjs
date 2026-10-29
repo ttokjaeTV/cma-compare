@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import assert from 'node:assert/strict';
-import { readBrokers, quoteHasRate, textHasDate, judge, cleanPage, dedupeQuotes } from '../ai-update.mjs';
+import { readBrokers, quoteHasRate, textHasDate, judge, cleanPage, dedupeQuotes, AI_ALLOW } from '../ai-update.mjs';
 
 const T = dirname(fileURLToPath(import.meta.url));
 const SCRIPT = join(T, '..', 'ai-update.mjs');
@@ -30,7 +30,7 @@ try {
   const outDir = join(tmp, 'out');
 
   console.log('1) 가짜 응답으로 dry-run');
-  const r1 = run(['--dry-run', '--mock', join(T, 'mock.json'), '--pages', join(T, 'pages.json'), '--index', idx, '--out', outDir, '--today', '2026-10-29', '--issue', '77']);
+  const r1 = run(['--dry-run', '--allow-all', '--mock', join(T, 'mock.json'), '--pages', join(T, 'pages.json'), '--index', idx, '--out', outDir, '--today', '2026-10-29', '--issue', '77']);
   assert.equal(r1.code, 0, r1.out);
   const res = JSON.parse(readFileSync(join(outDir, 'result.json'), 'utf8'));
   const patched = readFileSync(join(outDir, 'index.html'), 'utf8');
@@ -38,8 +38,8 @@ try {
   const after = readBrokers(patched);
   const by = (list, id) => list.find(b => b.id === id);
 
-  ok('정상 변경 3건만 수정 (한국투자 발행어음 · KB RP · 하나 RP)', () => {
-    assert.deepEqual(res.edits.map(e => e.key).sort(), ['hana.rp', 'koreainv.bill', 'kb.rp'].sort());
+  ok('정상 변경 4건 수정 (한국투자 발행어음 · KB RP · 하나 RP · 하나 발행어음[과거 기준일은 무시하고 금리만 반영])', () => {
+    assert.deepEqual(res.edits.map(e => e.key).sort(), ['hana.rp', 'hana.bill', 'koreainv.bill', 'kb.rp'].sort());
   });
   ok('한국투자 발행어음 2.85→3.05, 적용일 2026-10-20', () => {
     assert.equal(by(before, 'koreainv').bill.r, 2.85);
@@ -50,7 +50,9 @@ try {
     assert.equal(by(after, 'kb').rp.r, 2.55);
     assert.equal(by(after, 'kb').rp.d, '2026-10-27');
     assert.equal(by(after, 'hana').rp.r, 2.6);
-    assert.equal(by(after, 'hana').bill.r, by(before, 'hana').bill.r);   // hana_bill 은 보류 → 그대로
+    assert.equal(by(after, 'hana').bill.r, 3.1);                        // 하나 발행어음: 금리는 반영
+    assert.equal(by(after, 'hana').bill.d, by(before, 'hana').bill.d);  // 과거 기준일(2026-09-01)은 무시 → d 유지
+    assert.match(res.edits.find(e => e.key === 'hana.bill').dateNote, /페이지 기준일이 .*과거라 무시함\(`2026-09-01`\)/);
     assert.equal(by(after, 'kb').bill.r, by(before, 'kb').bill.r);       // 조건부 금리 → 그대로
   });
   ok('함정: 우리투자 「일반RP(별개 상품)」 2.90% 는 명품 CMA RP 칸에 넣지 않고 보류', () => {
@@ -59,24 +61,24 @@ try {
     assert.ok(!res.edits.some(e => e.key === 'wooriib.rp'));
   });
   ok('수정한 r·d 외에는 모든 필드가 그대로 (객체 전체 비교)', () => {
-    const touched = { 'koreainv.bill': 1, 'kb.rp': 1, 'hana.rp': 1 };
+    const touched = { 'koreainv.bill': 1, 'kb.rp': 1, 'hana.rp': 1, 'hana.bill': 1 };
     const strip = (list) => JSON.parse(JSON.stringify(list)).map(b => {
       for (const p of ['rp', 'bill']) if (touched[`${b.id}.${p}`]) { delete b[p].r; delete b[p].d; }
       return b;
     });
     assert.deepEqual(strip(after), strip(before));
   });
-  ok('바뀐 줄은 3개 증권사 줄뿐이고 CRLF 가 그대로', () => {
+  ok('바뀐 줄은 수정한 4개 줄뿐이고 CRLF 가 그대로', () => {
     const a = readFileSync(idx, 'utf8').split('\r\n');
     const b = patched.split('\r\n');
     assert.equal(a.length, b.length);
     assert.equal(patched.split('\n').length, patched.split('\r\n').length);   // 맨 \n 이 하나도 없음
     const diff = a.map((l, i) => (l === b[i] ? null : i)).filter(i => i !== null);
-    assert.equal(diff.length, 3, '바뀐 줄: ' + diff.join(','));
+    assert.equal(diff.length, 4, '바뀐 줄: ' + diff.join(','));
   });
-  ok('보류 10건과 이유', () => {
+  ok('보류 9건과 이유', () => {
     const h = Object.fromEntries(res.holds.map(x => [x.label, x.reason]));
-    assert.equal(res.holds.length, 10, JSON.stringify(res.holds, null, 1));
+    assert.equal(res.holds.length, 9, JSON.stringify(res.holds, null, 1));
     const find = (k) => res.holds.find(x => x.label.includes(k))?.reason || '';
     assert.match(find('KB증권 CMA 금리 JSON · KB증권 발행어음'), /기본 금리가 아닌/);
     assert.match(find('SK증권'), /변동/);                       // 2.70 → 5.10
@@ -86,7 +88,6 @@ try {
     assert.match(find('상상인증권'), /비정상 범위/);             // 0%
     assert.match(find('유안타'), /비정상 범위/);                 // 12.5%
     assert.match(find('신한'), /새 금리 2\.60 가 들어 있지 않음/);
-    assert.match(find('하나증권 발행어음'), /보다 과거/);
     assert.match(find('우리투자'), /다른 상품 표시/);
     void h;
   });
@@ -102,7 +103,7 @@ try {
   ok('PR 본문: 계산기의 우대 최고 금리(top)를 점검 목록에 보여 줌(낮은 기본금리면 경고 없음)', () => {
     const body = readFileSync(join(outDir, 'pr-body.md'), 'utf8');
     assert.match(body, /KB증권 RP형 CMA: 계산기에 우대 최고 `top` 2\.70%/);
-    assert.ok(!body.includes('⚠'));
+    assert.ok(!body.includes('⚠ 새 기본금리'));
   });
   ok('보류 댓글 본문이 「AI 추출 보류」로 시작', () => {
     const c = readFileSync(join(outDir, 'issue-comment.md'), 'utf8');
@@ -114,7 +115,7 @@ try {
 
   console.log('1-2) 감사 재현 입력(edge) — 상품 혼동·날짜 속 숫자·적용일 없음·마크다운 주입');
   const outE = join(tmp, 'outE');
-  const rE = run(['--dry-run', '--mock', join(T, 'edge.mock.json'), '--pages', join(T, 'edge.pages.json'), '--index', idx, '--out', outE, '--today', '2026-10-29', '--issue', '78']);
+  const rE = run(['--dry-run', '--allow-all', '--mock', join(T, 'edge.mock.json'), '--pages', join(T, 'edge.pages.json'), '--index', idx, '--out', outE, '--today', '2026-10-29', '--issue', '78']);
   assert.equal(rE.code, 0, rE.out);
   const resE = JSON.parse(readFileSync(join(outE, 'result.json'), 'utf8'));
   const afterE = readBrokers(readFileSync(join(outE, 'index.html'), 'utf8'));
@@ -141,9 +142,11 @@ try {
     assert.match(rp, /상품 표시\(RP\)가 없음|다른 상품 표시/);
     assert.match(bill, /상품 표시\(발행어음\)가 없음|다른 상품 표시/);
   });
-  ok('1번 SK·DB: 새 금리가 이번에 새로 나타난 값에 없으면 보류(약정 2.90→3.00, 새상품 등)', () => {
+  ok('1번 SK 는 보류(새 금리가 새로 나타난 값에 없음), DB 는 과거 날짜 무시 + 금리 같음 = 변경 없음', () => {
     assert.match(holdE('SK'), /새로 나타난 값|가 들어 있지 않음/);
-    assert.match(holdE('DB'), /보다 과거/);                         // 적용일을 과거로 되돌리면 금리와 무관하게 보류
+    assert.equal(holdE('DB'), '');                                  // 금리는 같고 과거 날짜는 무시 → 보류도 수정도 아님
+    assert.ok(!resE.edits.some(e => e.key === 'db.rp'));
+    assert.match(rE.out, /DB증권 RP형 CMA: 계산기 값과 같음/);
   });
   ok('2번 정수·소수 한 자리 오매칭: 날짜 「2026. 3.1.」 속 3.1 을 금리로 쓰지 않음', () => {
     assert.match(holdE('하나'), /가 들어 있지 않음|새로 나타난 값/);
@@ -170,7 +173,7 @@ try {
     writeFileSync(pg, JSON.stringify({ pages: { sk: { label: 'SK증권 CMA (RP)', url: 'https://e.test/sk', tier: 2, added: [3.0], removed: [2.7], text: 'SK증권 CMA RP 연 3.00% 2026-10-27 적용' } } }));
     writeFileSync(mk, JSON.stringify({ sk: { items: [{ slot: 'sk.rp', found: true, evidence_quote: 'SK증권 CMA RP 연 3.00% 2026-10-27 적용', rate: 3.0, is_base_rate: true, condition: '', effective_date: '2026-10-27', confidence: 'high' }] } }));
     const o = join(tmp, 'outTop');
-    const r = run(['--dry-run', '--mock', mk, '--pages', pg, '--index', idx, '--out', o, '--today', '2026-10-29', '--issue', '79']);
+    const r = run(['--dry-run', '--allow-all', '--mock', mk, '--pages', pg, '--index', idx, '--out', o, '--today', '2026-10-29', '--issue', '79']);
     assert.equal(r.code, 0, r.out);
     const body = readFileSync(join(o, 'pr-body.md'), 'utf8');
     assert.match(body, /SK증권 RP형 CMA: 계산기에 우대 최고 `top` 2\.90%/);
@@ -212,6 +215,101 @@ try {
     const k = [{ slot: mkSlot('rp'), j: edit('A 연 2.50%') }, { slot: mkSlot('bill'), j: edit('B 연 2.60%') }];
     dedupeQuotes(k);
     assert.ok(k.every(x => x.j.edit));
+  });
+
+  console.log('1-4) 대상 축소(허용 목록) · 적용일은 근거 문장에서만 · 과거 날짜 무시  (--allow-all 없이 실행)');
+  ok('허용 목록은 신한·IBK·상상인·유안타·하나 5곳뿐', () => {
+    assert.deepEqual([...AI_ALLOW].sort(), ['hana', 'ibk', 'sangsangin', 'shinhan', 'yuanta']);
+  });
+  const outA = join(tmp, 'outA');
+  const rA = run(['--dry-run', '--mock', join(T, 'r2.A.mock.json'), '--pages', join(T, 'r2.A.pages.json'), '--index', idx, '--out', outA, '--today', '2026-10-29']);
+  assert.equal(rA.code, 0, rA.out);
+  const resA = JSON.parse(readFileSync(join(outA, 'result.json'), 'utf8'));
+  ok('감사 2차 실제 형식 입력: KB·DB·대신·SK 는 호출 없이 「대상 아님(사람 확인)」, 유안타만 정상 처리', () => {
+    for (const k of ['KB증권', 'DB증권', '대신증권', 'SK증권']) {
+      assert.match(rA.out, new RegExp(`- ${k}[^\\n]*: AI 수정 대상 아님\\(사람 확인\\)`));
+    }
+    assert.equal((rA.out.match(/Claude 호출/g) || []).length, 1, rA.out);   // 호출은 유안타 한 번뿐
+    assert.deepEqual(resA.holds, []);
+    assert.deepEqual(resA.edits.map(e => e.key), ['yuanta.rp']);
+    assert.equal(resA.edits[0].newR, 2.7);
+  });
+  ok('유안타: 옛 기준일(2010.12.01)이 근거 문장 밖에 있으면 d 는 그대로이고 금리만 반영', () => {
+    const e = resA.edits[0];
+    const before0 = readBrokers(readFileSync(idx, 'utf8')).find(b => b.id === 'yuanta').rp;
+    const after0 = readBrokers(readFileSync(join(outA, 'index.html'), 'utf8')).find(b => b.id === 'yuanta').rp;
+    assert.equal(after0.r, 2.7);
+    assert.equal(after0.d, before0.d);
+    assert.equal(e.dateChanged, false);
+    assert.match(e.dateNote, /적용일 미확인/);
+  });
+  ok('SK(만기·약정 구간표) 입력 B1·B2 는 응답과 무관하게 호출 자체를 하지 않고 수정·보류도 없음', () => {
+    for (const m of ['r2.B1.mock.json', 'r2.B2.mock.json']) {
+      const o = join(tmp, 'out' + m);
+      const r = run(['--dry-run', '--mock', join(T, m), '--pages', join(T, 'r2.B.pages.json'), '--index', idx, '--out', o, '--today', '2026-10-29']);
+      assert.equal(r.code, 0, r.out);
+      assert.match(r.out, /SK증권 CMA 금리 API: AI 수정 대상 아님\(사람 확인\)/);
+      assert.ok(!/Claude 호출/.test(r.out));
+      const x = JSON.parse(readFileSync(join(o, 'result.json'), 'utf8'));
+      assert.deepEqual([x.edits, x.holds], [[], []]);
+    }
+  });
+  ok('하나 실제 형식(JSON output.RpIntRT·RpIntDT): 근거 문장 안의 기준일은 반영되어 d 가 바뀜', () => {
+    const o = join(tmp, 'outHana');
+    const r = run(['--dry-run', '--mock', join(T, 'hana.real.mock.json'), '--pages', join(T, 'hana.real.pages.json'), '--index', idx, '--out', o, '--today', '2026-10-29']);
+    assert.equal(r.code, 0, r.out);
+    const x = JSON.parse(readFileSync(join(o, 'result.json'), 'utf8'));
+    assert.deepEqual(x.holds, []);
+    assert.deepEqual(x.edits.map(e => e.key), ['hana.rp']);
+    const h = readBrokers(readFileSync(join(o, 'index.html'), 'utf8')).find(b => b.id === 'hana').rp;
+    assert.equal(h.r, 2.6);
+    assert.equal(h.d, '2026-10-28');
+    assert.equal(x.edits[0].dateNote, '');
+  });
+
+  // IBK RP(기존 2.75 · d 2026-08-28) 한 칸으로 적용일 규칙을 가른다
+  const ibk = (name, text, quote, date) => {
+    const pg = join(tmp, `ibk.${name}.pages.json`);
+    const mk = join(tmp, `ibk.${name}.mock.json`);
+    writeFileSync(pg, JSON.stringify({ pages: { ibk: { label: 'IBK투자증권 CMA 금리', url: 'https://e.test/ibk', tier: 2, added: [2.8], removed: [2.75], text } } }));
+    writeFileSync(mk, JSON.stringify({ ibk: { items: [{ slot: 'ibk.rp', found: true, evidence_quote: quote, rate: 2.8, is_base_rate: true, condition: '', effective_date: date, confidence: 'high' }] } }));
+    const o = join(tmp, 'out.ibk.' + name);
+    const r = run(['--dry-run', '--mock', mk, '--pages', pg, '--index', idx, '--out', o, '--today', '2026-10-29']);
+    assert.equal(r.code, 0, r.out);
+    const x = JSON.parse(readFileSync(join(o, 'result.json'), 'utf8'));
+    assert.equal(x.holds.length, 0, JSON.stringify(x.holds));
+    assert.equal(x.edits.length, 1);
+    const d = readBrokers(readFileSync(join(o, 'index.html'), 'utf8')).find(b => b.id === 'ibk').rp;
+    return { e: x.edits[0], d, body: readFileSync(join(o, 'pr-body.md'), 'utf8') };
+  };
+  ok('2번 날짜가 본문 다른 곳에만 있으면(근거 문장 밖) 인정하지 않고 d 유지 + PR 에 적용일 미확인', () => {
+    const { e, d, body } = ibk('outside', '조회 기준 2026-10-20 안내 · IBK CMA RP 연 2.80%', 'IBK CMA RP 연 2.80%', '2026-10-20');
+    assert.equal(d.r, 2.8);
+    assert.equal(d.d, '2026-08-28');
+    assert.equal(e.dateChanged, false);
+    assert.match(e.dateNote, /적용일 미확인\(감지일 2026-10-29\)/);
+    assert.match(body, /2026-08-28 \(유지 · 적용일 미확인\)/);
+  });
+  ok('2번 날짜가 오늘(감지일)과 같으면 근거 문장 안에 있어도 미확인으로 처리', () => {
+    const { e, d } = ibk('today', 'IBK CMA RP 연 2.80% 2026-10-29 조회', 'IBK CMA RP 연 2.80% 2026-10-29 조회', '2026-10-29');
+    assert.equal(d.d, '2026-08-28');
+    assert.match(e.dateNote, /감지일과 같아 쓰지 않았습니다/);
+  });
+  ok('2번 근거 문장 안에 있는 날짜는 d 에 반영', () => {
+    const { e, d, body } = ibk('inside', 'IBK CMA RP 연 2.80% 2026-10-20 적용', 'IBK CMA RP 연 2.80% 2026-10-20 적용', '2026-10-20');
+    assert.equal(d.r, 2.8);
+    assert.equal(d.d, '2026-10-20');
+    assert.equal(e.dateChanged, true);
+    assert.equal(e.dateNote, '');
+    assert.match(body, /2026-08-28 → \*\*2026-10-20\*\*/);
+  });
+  ok('3번 기존보다 과거 날짜는 보류하지 않고 날짜만 무시 — 금리는 반영, PR 에 무시 메모', () => {
+    const { e, d, body } = ibk('past', 'IBK CMA RP 연 2.80% 기준일 2010.12.01', 'IBK CMA RP 연 2.80% 기준일 2010.12.01', '2010-12-01');
+    assert.equal(d.r, 2.8);
+    assert.equal(d.d, '2026-08-28');
+    assert.equal(e.dateChanged, false);
+    assert.match(e.dateNote, /페이지 기준일이 기존 적용일 2026-08-28 보다 과거라 무시함\(`2010-12-01`\)/);
+    assert.match(body, /과거 기준일 무시/);
   });
 
   console.log('2) 키 없음');

@@ -20,7 +20,7 @@
  *   node watch/ai-update.mjs                       워크플로 실행 (키·GH_TOKEN 필요)
  *   node watch/ai-update.mjs --dry-run --mock f    가짜 응답 f 로 시험. API·git·gh 를 쓰지 않는다
  *     부가: --pages <changed-pages.json> --index <index.html> --out <dir> --today YYYY-MM-DD
- *           --issue <번호> --show-prompt
+ *           --issue <번호> --show-prompt   --allow-all(시험 전용: 허용 목록 AI_ALLOW 무시)
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -61,6 +61,18 @@ const SLOTS = {
 };
 const PRODUCT = { rp: 'RP형 CMA', bill: '발행어음형 CMA' };
 
+/**
+ * AI 수정을 해도 되는 감시 대상(targets.json 의 id). 감사가 실제 페이지 형식으로 확인한 곳만 둔다.
+ * 여기 없는 대상은 Claude 를 호출하지 않고(비용 절약) 이슈만 남겨 사람이 확인한다.
+ *   제외 이유 — kb_cma: 한 JSON 에 RP·발행어음 값이 키 이름만 다르게 섞여 있어 혼동 위험이 큼
+ *               db: 숫자 하나뿐인 JSON(PER_INT)이라 상품 표시가 없어 근거 문장 검증이 성립하지 않음
+ *               daishin: 상품 유형 안내표(MMW·RP·국공채RP)가 한 문장에 이어져 있어 칸을 구분할 수 없음
+ *               sk: 만기·약정 구간별 금리표 중 어느 칸이 기본 RP 인지 문장만으로 알 수 없음
+ *               wooriib_rp: 일반RP(수시)와 별개 상품이 같은 페이지에 있음
+ *   (kis_bill·hana_bill 은 이번 허용 목록에 없으므로 같은 방식으로 사람 확인)
+ */
+export const AI_ALLOW = ['shinhan', 'ibk', 'sangsangin', 'yuanta', 'hana'];
+
 /* ───────────── 인자·경로 ───────────── */
 const DIR = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(DIR, '..');
@@ -71,7 +83,7 @@ function parseArgs(argv) {
     const a = argv[i];
     if (!a.startsWith('--')) continue;
     const k = a.slice(2);
-    if (['dry-run', 'show-prompt'].includes(k)) o[k] = true;
+    if (['dry-run', 'show-prompt', 'allow-all'].includes(k)) o[k] = true;
     else o[k] = argv[++i];
   }
   return o;
@@ -79,6 +91,7 @@ function parseArgs(argv) {
 const ARGS = parseArgs(process.argv.slice(2));
 const MOCK_PATH = ARGS.mock ? resolve(ARGS.mock) : null;
 const DRY = Boolean(ARGS['dry-run'] || MOCK_PATH);          // 가짜 응답으로는 절대 실제 PR 을 만들지 않는다
+const ALLOW_ALL = Boolean(ARGS['allow-all']) && DRY;         // 시험 전용 — 실제 실행에서는 허용 목록을 끌 수 없다
 const PAGES_PATH = resolve(ARGS.pages || join(DIR, 'changed-pages.json'));
 const INDEX_PATH = resolve(ARGS.index || join(REPO, 'index.html'));
 const OUT_DIR = ARGS.out ? resolve(ARGS.out) : null;
@@ -217,7 +230,7 @@ const SYSTEM = [
   '- rate: 연 % 숫자(예 2.65).',
   '- is_base_rate: 가입 조건·한도·대상 제한 없이 일반 개인에게 적용되는 기본 금리면 true. 우대·이벤트·조건부·법인/VIP 전용이면 false.',
   '- condition: 그 금리에 붙은 적용 조건(한도·대상·최소 가입 등)이 있으면 한 줄로, 없으면 "".',
-  '- effective_date: 페이지(가능하면 evidence_quote)에 그 금리의 적용일·기준일이 실제로 적혀 있을 때만 YYYY-MM-DD. 없으면 "" (추정·오늘 날짜 금지).',
+  '- effective_date: evidence_quote 문장 안에 그 금리의 적용일·기준일이 실제로 적혀 있을 때만 YYYY-MM-DD. 문장 밖(조회일·페이지 다른 곳)의 날짜는 쓰지 말고 "" (추정·오늘 날짜 금지).',
   '- confidence: 위 사항이 페이지에서 명확히 확인되면 high, 일부 해석이 필요하면 medium, 불확실하면 low.',
 ].join('\n');
 
@@ -398,22 +411,27 @@ export function judge(item, slot, page, ctx = {}) {
     return { hold: `새 금리 ${rate.toFixed(2)} 가 이번에 새로 나타난 값 [${page.added.join(', ')}] 에 없음` };
   }
 
-  // 적용일: 근거 문장이나 본문에 실제로 적혀 있을 때만 쓴다. 없으면 기존 d 를 그대로 둔다.
+  // 적용일: 근거 문장 안에 실제로 적혀 있을 때만 쓴다. 없으면 기존 d 를 그대로 둔다.
   const claimed = String(item.effective_date || '').trim();
   let newD = '';
   let dateNote = '';
   if (claimed) {
     if (!validDate(claimed)) return { hold: `적용일 ${code(claimed)} 형식이 올바르지 않음` };
-    if (textHasDate(quote, claimed) || textHasDate(pageText, claimed)) {
+    if (claimed === TODAY) {
+      // 조회일(감지일)과 같은 날짜는 「오늘 기준」 표시일 가능성이 커서 적용일로 인정하지 않는다
+      dateNote = `적용일 미확인(감지일 ${TODAY}) — 응답의 적용일 ${code(claimed)} 이 감지일과 같아 쓰지 않았습니다`;
+    } else if (!textHasDate(quote, claimed)) {
+      // 근거 문장 안에 있는 날짜만 인정(본문 다른 곳의 조회일·옛 기준일에 걸리지 않게)
+      dateNote = `적용일 미확인(감지일 ${TODAY}) — 응답의 적용일 ${code(claimed)} 이 근거 문장에 없어 쓰지 않았습니다`;
+    } else {
       const limit = new Date(Date.parse(TODAY + 'T00:00:00Z') + 30 * 86400000).toISOString().slice(0, 10);
       if (claimed > limit) return { hold: `적용일 ${claimed} 이 오늘(${TODAY})보다 30일 넘게 미래` };
-      // 적용일을 과거로 되돌리는 것은 금리가 같든 다르든 보류(오래된 페이지 의심)
       if (slot.oldD && validDate(slot.oldD) && claimed < slot.oldD) {
-        return { hold: `적용일 ${claimed} 이 기존 적용일 ${slot.oldD} 보다 과거(오래된 페이지 의심)` };
+        // 기존보다 과거인 날짜는 보류하지 않고 날짜만 무시한다(옛 기준일이 적힌 페이지 대응). 금리는 다른 검증을 통과하면 진행
+        dateNote = `페이지 기준일이 기존 적용일 ${slot.oldD} 보다 과거라 무시함(${code(claimed)}) — 적용일은 기존 값을 유지`;
+      } else {
+        newD = claimed;
       }
-      newD = claimed;
-    } else {
-      dateNote = `적용일 미확인(감지일 ${TODAY}) — 응답의 적용일 ${code(claimed)} 은 본문에서 확인되지 않아 쓰지 않았습니다`;
     }
   } else {
     dateNote = `적용일 미확인(감지일 ${TODAY})`;
@@ -459,7 +477,7 @@ function prBody(edits, holds, urlOf, issue) {
   L.push('**자동 병합되지 않습니다.** 출처를 직접 열어 확인한 뒤에만 병합하세요.', '');
   L.push('| 항목 | 금리 | 적용일 | 신뢰도 |', '|---|---|---|---|');
   for (const e of edits) {
-    const dcol = e.dateChanged ? `${e.oldD || '–'} → **${e.newD}**` : (e.dateNote ? `${e.oldD || '–'} (유지 · 적용일 미확인)` : `${e.oldD || '–'} (동일)`);
+    const dcol = e.dateChanged ? `${e.oldD || '–'} → **${e.newD}**` : (e.dateNote ? `${e.oldD || '–'} (유지 · ${e.dateNote.startsWith('페이지 기준일') ? '과거 기준일 무시' : '적용일 미확인'})` : `${e.oldD || '–'} (동일)`);
     L.push(`| ${e.name} ${PRODUCT[e.product]} | ${pct(e.oldR)} → **${pct(e.newR)}** | ${dcol} | ${e.confidence} |`);
   }
   L.push('', '### 근거 (페이지 본문에서 글자 그대로 대조 확인됨)', '');
@@ -564,6 +582,8 @@ async function main() {
   for (const [id, page] of Object.entries(pages)) {
     const defs = SLOTS[id];
     if (!defs) { log(`- ${page.label}: AI 수정 대상 아님(지표이거나 계산기에 개별 항목 없음)`); continue; }
+    // 허용 목록 밖은 호출 없이 건너뛴다(이슈는 check 단계가 이미 만들었음). --allow-all 은 시험 전용.
+    if (!ALLOW_ALL && !AI_ALLOW.includes(id)) { log(`- ${page.label}: AI 수정 대상 아님(사람 확인)`); continue; }
     const slots = [];
     for (const [bid, product] of defs) {
       const b = byId[bid];

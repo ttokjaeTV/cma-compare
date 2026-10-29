@@ -22,7 +22,12 @@ HTML 구조를 파싱하지 않으므로 마크업이 바뀌어도 잘 깨지지
 
 ## Tier
 
-`targets.json`의 `tier: 1`은 **바뀌면 전 증권사가 따라 움직이는 지표**입니다. 하나라도 변하면 이슈 제목에 🚨가 붙고, 그때가 전수 갱신 타이밍입니다.
+`targets.json`의 `tier: 1`은 **바뀌면 다른 곳도 따라 움직이는 지표**입니다. 하나라도 변하면 이슈에 「긴급」 라벨과 🚨가 붙습니다.
+
+- 제목이 **「기준금리 변동 감지 — 전수 갱신 필요」** 인 것은 `bok_base_rate`·`ksfc_rate`(선행지표)가 바뀐 때뿐입니다. 이때가 전수 갱신 타이밍입니다.  
+- 발행어음·종금 조달금리(한국투자·하나·KB·우리투자 RP)만 바뀌면 제목이 **「발행어음·종금형 조달금리 변동 감지 — 해당 증권사 확인 필요」** 가 됩니다. 금통위와 무관합니다.  
+- 유안타 금리 데이터는 자사 상품 10여 종(CMA·RP·MMW·약정형 MMW·발행어음 등)이 한 파일에 들어 있어 어느 하나만 바뀌어도 잡히고, 선행지표도 아니라서 tier 2 입니다 (2026-10-29 변경).  
+- 금리 수치가 0개로 읽힌 응답(점검 화면·빈 JSON)은 「값이 전부 사라짐」으로 보지 않고 「수집 실패」로 처리해 이전 값을 유지합니다.
 
 ## 감시 범위는 전체가 아닙니다
 
@@ -72,6 +77,7 @@ HTML 구조를 파싱하지 않으므로 마크업이 바뀌어도 잘 깨지지
 ```bash
 node watch/check.mjs
 node watch/test/run.mjs     # AI 단계 시험 (가짜 응답, 키·네트워크 불필요)
+node watch/test/detect.mjs  # 감지·제목 판정 시험 (네트워크 불필요)
 node watch/ai-update.mjs --dry-run --mock watch/test/mock.json \
   --pages watch/test/pages.json --index watch/test/index.sample.html --out /tmp/out
 ```

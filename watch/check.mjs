@@ -13,6 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import https from 'node:https';
 import { constants } from 'node:crypto';
+import { stripTags, fingerprint, LEAD_IDS, usable, diffRates, titleFor } from './detect.mjs';
 
 const DIR = dirname(fileURLToPath(import.meta.url));
 const TARGETS = JSON.parse(readFileSync(join(DIR, 'targets.json'), 'utf8')).targets;
@@ -20,14 +21,6 @@ const BASE_PATH = join(DIR, 'baseline.json');
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const TIMEOUT = 20000;
-
-/** 태그를 걷어낸 본문 */
-function stripTags(text) {
-  return text
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ');
-}
 
 /**
  * AI 단계(ai-update.mjs)에 넘길 본문: 태그 제거 + 기본 엔티티 해제 + 공백 정리.
@@ -39,18 +32,6 @@ function plainText(text) {
     .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ').trim()
     .slice(0, 400000);
-}
-
-/** 금리로 볼 수 있는 수치만 추출 */
-function fingerprint(text, mode) {
-  const plain = stripTags(text);
-  const nums = plain.match(/(?<![\d.])[0-9]\.[0-9]{1,2}(?![\d])/g) || [];
-  // 금리 범위 밖(0.5 미만, 8 초과)은 버전번호·비율 등 노이즈일 가능성이 커서 제외
-  const rates = nums.map(Number).filter(n => n >= 0.5 && n <= 8);
-  // mode:'first' — 과거 이력이 함께 실린 표(한국은행 추이표)는 문서 첫 값만 본다.
-  // 집합으로 비교하면 과거에 나왔던 금리로 인상될 때 변화를 못 잡는다.
-  if (mode === 'first') return rates.length ? [rates[0]] : [];
-  return [...new Set(rates)].sort((a, b) => a - b);
 }
 
 /** 구형 TLS 재협상만 허용하는 서버(우리투자증권)용 폴백 */
@@ -143,8 +124,9 @@ async function grabWithRetry(t) {
   if (!failed) return first;
   await new Promise(r => setTimeout(r, 4000));
   const second = await grab(t);
-  const stillFailed = second.error || (second.rates && second.rates.length === 0);
-  if (!stillFailed) console.log(`  ↻ ${t.label} — 재시도 성공`);
+  if (usable(second)) console.log(`  ↻ ${t.label} — 재시도 성공`);
+  // 재시도 후에도 수치가 0개면 "값이 전부 사라짐"이 아니라 수집 실패로 돌려 이전 값을 유지한다.
+  else if (!second.error) return { error: '금리 수치 0개 (빈 응답·점검 화면·형식 변경 의심)' };
   return second;
 }
 
@@ -163,9 +145,7 @@ for (const t of TARGETS) {
   next.targets[t.id] = { rates: r.rates, checked_at: now };
 
   if (prev?.rates) {
-    const a = new Set(prev.rates), b = new Set(r.rates);
-    const added = r.rates.filter(x => !a.has(x));
-    const removed = prev.rates.filter(x => !b.has(x));
+    const { added, removed } = diffRates(prev.rates, r.rates);
     if (added.length || removed.length) {
       changed.push({ ...t, added, removed });
       pages[t.id] = { label: t.label, url: t.url, tier: t.tier, added, removed, text: r.plain || '' };
@@ -190,9 +170,8 @@ const lines = [];
 if (t1.length) {
   // tier 1은 두 갈래다 — 지표(기준금리·고시금리)와 발행어음·종금 조달금리.
   // 2026-09 실측: 기준금리가 그대로여도 발행어음·종금형은 따로 움직였다.
-  const LEAD = new Set(['bok_base_rate', 'ksfc_rate']);
-  const lead = t1.filter(c => LEAD.has(c.id));
-  const fund = t1.filter(c => !LEAD.has(c.id));
+  const lead = t1.filter(c => LEAD_IDS.has(c.id));
+  const fund = t1.filter(c => !LEAD_IDS.has(c.id));
 
   if (lead.length) {
     lines.push('## 🚨 기준금리·증권금융 고시가 바뀌었습니다', '');
@@ -234,9 +213,7 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   writeFileSync(process.env.GITHUB_STEP_SUMMARY, report + '\n', { flag: 'a' });
 }
 if (process.env.GITHUB_OUTPUT) {
-  const title = t1.length
-    ? `🚨 기준금리 변동 감지 — CMA 표 전수 갱신 필요 (${today})`
-    : `CMA 금리 변경 감지 ${changed.length}건 (${today})`;
+  const title = titleFor(changed, today);
   writeFileSync(process.env.GITHUB_OUTPUT,
     `changed=${changed.length > 0}\ntier1=${t1.length > 0}\ntitle=${title}\n`, { flag: 'a' });
 }

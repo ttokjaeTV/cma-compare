@@ -22,7 +22,7 @@
     {
       "id": "yuanta",
       "label": "유안타증권 금리 데이터",
-      "tier": 1,
+      "tier": 2,
       "url": "https://www.myasset.com/myasset/code/prodRate.tbl",
       "encoding": "euc-kr"
     },

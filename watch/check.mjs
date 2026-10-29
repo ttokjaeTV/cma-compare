@@ -144,7 +144,8 @@ for (const t of TARGETS) {
 
   next.targets[t.id] = { rates: r.rates, checked_at: now };
 
-  if (prev?.rates) {
+  // 첫 수집 실패로 비어 있던 기준값과는 비교하지 않는다(이튿날 전부 '새로 생김' 오탐 방지)
+  if (prev?.rates?.length && !prev.never_seen) {
     const { added, removed } = diffRates(prev.rates, r.rates);
     if (added.length || removed.length) {
       changed.push({ ...t, added, removed });

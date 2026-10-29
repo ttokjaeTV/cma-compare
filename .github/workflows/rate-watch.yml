@@ -50,6 +50,7 @@ jobs:
       - name: AI 데이터 수정 PR
         if: steps.check.outputs.changed == 'true'
         continue-on-error: true
+        timeout-minutes: 15
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GH_TOKEN: ${{ github.token }}

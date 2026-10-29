@@ -6,7 +6,7 @@
     { "slot": "kb.bill", "found": true, "evidence_quote": "발행어음 CMA 연 3.40% (가입 1천만원 이하 한정 이벤트)", "rate": 3.4, "is_base_rate": false, "condition": "가입 1천만원 이하 한정 이벤트", "effective_date": "", "confidence": "high" }
   ] },
   "hana_bill": { "items": [ { "slot": "hana.bill", "found": true, "evidence_quote": "하나증권 발행어음 연 3.10% 2026-09-01 적용", "rate": 3.1, "is_base_rate": true, "condition": "", "effective_date": "2026-09-01", "confidence": "high" } ] },
-  "wooriib_rp": { "items": [ { "slot": "wooriib.rp", "found": true, "evidence_quote": "우리투자증권 RP형 CMA 연 2.90% 세전 기준", "rate": 2.9, "is_base_rate": true, "condition": "", "effective_date": "", "confidence": "high" } ] },
+  "wooriib_rp": { "items": [ { "slot": "wooriib.rp", "found": true, "evidence_quote": "우리투자증권 일반RP(수시) 연 2.90% 세전 기준", "rate": 2.9, "is_base_rate": true, "condition": "", "effective_date": "", "confidence": "high" } ] },
   "yuanta": { "items": [ { "slot": "yuanta.rp", "found": true, "evidence_quote": "유안타증권 CMA RP 연 12.50% 2026-10-27", "rate": 12.5, "is_base_rate": true, "condition": "", "effective_date": "2026-10-27", "confidence": "high" } ] },
   "hana": { "items": [ { "slot": "hana.rp", "found": true, "evidence_quote": "하나증권 CMA RP 2.60% 적용일 2026-10-22", "rate": 2.6, "is_base_rate": true, "condition": "", "effective_date": "2026-10-22", "confidence": "high" } ] },
   "shinhan": { "items": [ { "slot": "shinhan.rp", "found": true, "evidence_quote": "신한투자증권 CMA RP", "rate": 2.6, "is_base_rate": true, "condition": "", "effective_date": "2026-10-26", "confidence": "high" } ] },

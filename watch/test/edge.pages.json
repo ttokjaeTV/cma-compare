@@ -1,0 +1,11 @@
+{"_설명":"감사가 재현에 쓴 입력(shinhan·sk·db·ibk·kb_cma·daishin) + hana(날짜 속 3.1)·yuanta(금리 같고 날짜만 다름). edge.mock.json 과 짝",
+"pages":{
+"shinhan":{"label":"신한","url":"https://e.test/s","tier":2,"added":[2.5],"removed":[2.45],"text":"명품 CMA RP 연 2.50% 2026-10-28 · 일반RP(종목 1010) 연 2.60% 2026-10-28"},
+"sk":{"label":"SK","url":"https://e.test/sk","tier":2,"added":[2.8],"removed":[2.7],"text":"SK증권 CMA RP 3개월 약정 2.90% 개인 2.80%"},
+"db":{"label":"DB","url":"https://e.test/db","tier":2,"added":[2.8],"removed":[],"text":"DB증권 CMA RP 연 2.75% 2026-08-01 적용 새상품 2.80%"},
+"ibk":{"label":"IBK","url":"https://e.test/ibk","tier":2,"added":[2.8],"removed":[2.75],"text":"IBK CMA RP 연 2.80%"},
+"kb_cma":{"label":"KB","url":"https://e.test/kb","tier":1,"added":[2.65],"removed":[2.6],"text":"RP형 CMA 연 2.50% · 발행어음 CMA 연 2.65%"},
+"daishin":{"label":"대신","url":"https://e.test/d","tier":2,"added":[2.85],"removed":[2.8],"text":"대신 CMA RP 연 2.85% 국공채RP형 2.75%"},
+"hana":{"label":"하나증권 CMA (RP·MMW)","url":"https://e.test/hana","tier":2,"added":[3.1],"removed":[],"text":"하나증권 CMA RP 시행일 2026. 3.1. 안내 연 2.55%"},
+"yuanta":{"label":"유안타증권 금리 데이터","url":"https://e.test/yuanta","tier":1,"added":[],"removed":[],"text":"유안타증권 CMA RP 연 2.60% 2026-10-27 적용"}
+}}

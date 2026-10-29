@@ -34,7 +34,8 @@ const API_VERSION = '2026-10-21';
 const API_URL = 'https://api.anthropic.com/v1/messages';
 const MAX_TOKENS = 1500;                 // 응답은 슬롯당 200토큰 안팎
 const PAGE_CHARS = 8000;                 // 대상 한 곳당 페이지 본문 상한(글자)
-const WINDOW = 150;                      // 금리처럼 보이는 숫자 앞뒤로 남기는 글자 수
+const WINDOW = 250;                      // 금리처럼 보이는 숫자 앞뒤로 남기는 글자 수(표 머리말·조건 문구가 잘리지 않도록 넉넉히)
+const HEAD_CHARS = 400;                  // 본문 맨 앞은 항상 남긴다(표 머리말·상품 구분)
 const MAX_DELTA_PP = 2.0;                // 기존 값 대비 허용 변동폭(%p)
 const RATE_MAX = 10;                     // 금리 상한(%) — 0 이하·이 값 초과는 보류
 const REQUEST_TIMEOUT_MS = 60000;
@@ -94,13 +95,13 @@ const log = (...a) => console.log(...a);
 export function excerpt(text, hints = []) {
   if (text.length <= PAGE_CHARS) return text;
   const rx = /(?<![\d.])\d{1,2}\.\d{1,2}(?!\d)/g;
-  const wins = [];
+  const wins = [{ s: 0, e: Math.min(text.length, HEAD_CHARS), hit: true }];
   for (const m of text.matchAll(rx)) {
     const v = Number(m[0]);
     if (v < 0.5 || v > RATE_MAX) continue;
     wins.push({ s: Math.max(0, m.index - WINDOW), e: Math.min(text.length, m.index + m[0].length + WINDOW), hit: hints.includes(v) });
   }
-  if (!wins.length) return text.slice(0, PAGE_CHARS);
+  if (wins.length === 1) return text.slice(0, PAGE_CHARS);
   wins.sort((a, b) => a.s - b.s);
   const merged = [];
   for (const w of wins) {
@@ -209,12 +210,14 @@ const SYSTEM = [
   '',
   '규칙',
   '- 요청된 slot 하나당 항목을 정확히 하나씩 돌려줍니다.',
+  '- 한 페이지에 일반RP·국공채RP·약정형·발행어음·MMW·법인 전용처럼 서로 다른 상품의 금리가 섞여 있습니다. slot 에 적힌 상품(조건·메모 참고)의 금리만 고르고, 메모가 "별개 상품"·"혼동 금지"라고 한 상품의 값은 쓰지 않습니다.',
+  '- slot 마다 서로 다른 근거 문장을 씁니다. 한 문장을 두 slot 에 같이 쓰지 않습니다. evidence_quote 에는 상품명(예: RP, 발행어음)이 함께 보이게 복사합니다.',
   '- 페이지 텍스트에 직접 적힌 금리만 씁니다. 추측·계산·다른 상품 값으로 대신하지 않습니다. 확인되지 않으면 found=false 로 하고 나머지는 빈 값(문자열 "", 숫자 0, false)으로 둡니다.',
   '- evidence_quote: 그 금리가 적힌 부분을 페이지 텍스트에서 한 글자도 바꾸지 말고 그대로 복사합니다(300자 이내, 새 금리 숫자 포함). 요약·재구성 금지.',
   '- rate: 연 % 숫자(예 2.65).',
   '- is_base_rate: 가입 조건·한도·대상 제한 없이 일반 개인에게 적용되는 기본 금리면 true. 우대·이벤트·조건부·법인/VIP 전용이면 false.',
   '- condition: 그 금리에 붙은 적용 조건(한도·대상·최소 가입 등)이 있으면 한 줄로, 없으면 "".',
-  '- effective_date: 페이지에 적용일·기준일이 있으면 YYYY-MM-DD, 없으면 "".',
+  '- effective_date: 페이지(가능하면 evidence_quote)에 그 금리의 적용일·기준일이 실제로 적혀 있을 때만 YYYY-MM-DD. 없으면 "" (추정·오늘 날짜 금지).',
   '- confidence: 위 사항이 페이지에서 명확히 확인되면 high, 일부 해석이 필요하면 medium, 불확실하면 low.',
 ].join('\n');
 
@@ -247,6 +250,12 @@ function buildSchema(slotKeys) {
   };
 }
 
+/** index.html 의 note 같은 문구를 한 줄로 줄인다(<br> → ' / ') */
+const brief = (s, n) => String(s).replace(/<br\s*\/?>/gi, ' / ').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim().slice(0, n);
+
+/** 본문 속 </page> 같은 태그를 지워 프롬프트의 자료 구획을 빠져나가지 못하게 한다 */
+export const cleanPage = (t) => String(t || '').replace(/<\s*\/?\s*page\b[^>]*>/gi, '');
+
 function buildRequest(target, page, slots) {
   const slotKeys = slots.map(s => s.key);
   const lines = [
@@ -254,11 +263,12 @@ function buildRequest(target, page, slots) {
     `출처 URL: ${page.url}`,
     `오늘(KST): ${TODAY}`,
     '요청 slot (계산기에 지금 들어 있는 값):',
-    ...slots.map(s => `- ${s.key}: ${s.name} ${PRODUCT[s.product]} — 현재 ${s.oldR.toFixed(2)}% (적용일 ${s.oldD || '미상'})`),
+    ...slots.map(s => `- ${s.key}: ${s.name} ${PRODUCT[s.product]} — 현재 ${s.oldR.toFixed(2)}% (적용일 ${s.oldD || '미상'})` +
+      (s.cond ? ` / 조건 ${brief(s.cond, 80)}` : '') + (s.note ? ` / 메모 ${brief(s.note, 200)}` : '')),
     `숫자 지문 변화(참고용 — 금리라는 보장은 없음): 새로 나타난 값 [${(page.added || []).join(', ')}] / 사라진 값 [${(page.removed || []).join(', ')}]`,
     '',
     '<page>',
-    excerpt(page.text || '', [...(page.added || [])]),
+    excerpt(cleanPage(page.text), [...(page.added || [])]),
     '</page>',
   ];
   return {
@@ -307,14 +317,48 @@ async function callClaude(targetId, body) {
 /* ───────────── 검증 ───────────── */
 const squash = s => String(s).replace(/\s+/g, '');
 
-function rateVariants(rate) {
-  const v = new Set([rate.toFixed(2), String(rate)]);
+/**
+ * 금리 표기 변형. 소수 둘째·첫째 자리만 쓰고 정수 표기("3")는 쓰지 않는다 —
+ * "3개월" 같은 엉뚱한 숫자에 걸리기 때문. 정수 금리(예 3.00%)도 "3.00" 으로 적혀 있어야 인정.
+ */
+export function rateVariants(rate) {
+  const v = new Set([rate.toFixed(2)]);
   if (Number(rate.toFixed(1)) === rate) v.add(rate.toFixed(1));
   return [...v];
 }
 
-function quoteHasRate(quote, rate) {
-  return rateVariants(rate).some(s => new RegExp(`(?<![\\d.])${s.replace('.', '\\.')}(?!\\d)`).test(quote));
+/**
+ * 근거 문장에 금리 숫자가 "금리로" 들어 있는지.
+ * 앞은 숫자·소수점이 아니고, 뒤는 숫자·소수점이 아니어야 한다("2026. 3.1." 의 3.1 을 거른다).
+ * 문장에 % 가 하나라도 있으면 숫자 바로 뒤(공백 허용)에 % 가 붙은 경우만 인정한다.
+ */
+export function quoteHasRate(quote, rate) {
+  const needPct = /[%％]|퍼센트/.test(quote);
+  return rateVariants(rate).some(s => new RegExp(
+    `(?<![\\d.])${s.replace('.', '\\.')}(?![.\\d])` + (needPct ? '\\s*(?:[%％]|퍼센트)' : '')).test(quote));
+}
+
+/** YYYY-MM-DD 날짜가 문장·본문에 (2026-10-20 · 2026.10.20 · 2026. 10. 20. · 2026/10/20 · 2026년 10월 20일 꼴로) 실제 있는지 */
+export function textHasDate(text, ymd) {
+  const [y, m, d] = ymd.split('-').map(Number);
+  const rx = new RegExp(`(?<!\\d)${y}\\s*[-./년]\\s*0?${m}\\s*[-./월]\\s*0?${d}(?!\\d)`);
+  return rx.test(text);
+}
+
+/* 상품 구분: 근거 문장에 슬롯의 상품 키워드가 있어야 하고, 다른 상품 키워드가 있으면 안 된다 */
+const PRODUCT_KEYWORD = { rp: /RP/i, bill: /발행어음/ };
+const OTHER_PRODUCT = {
+  rp:   /발행어음|MMW|MMF|일반\s*RP|국공채\s*RP|기간물|약정|종금|원\s*CMA|CMA\s*노트|종목\s*\d+/i,
+  bill: /RP|MMW|MMF|국공채|기간물|약정|종금|원\s*CMA|CMA\s*노트/i,
+};
+function productProblem(quote, slot, productSpecificPage) {
+  const need = PRODUCT_KEYWORD[slot.product];
+  if (!productSpecificPage && !need.test(quote)) return `근거 문장에 ${PRODUCT[slot.product]} 상품 표시(${slot.product === 'rp' ? 'RP' : '발행어음'})가 없음`;
+  const other = quote.match(new RegExp(OTHER_PRODUCT[slot.product].source, 'gi')) || [];
+  // 이 슬롯 자신의 조건 문구(c)에 있는 말(예: 한국투자 RP 의 "약정")은 다른 상품 표시가 아니다
+  const bad = other.filter(w => !(slot.cond && new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s*'), 'i').test(slot.cond)));
+  if (bad.length) return `근거 문장에 다른 상품 표시가 있음(${[...new Set(bad)].map(code).join(', ')}) — ${PRODUCT[slot.product]} 값인지 불확실`;
+  return '';
 }
 
 function validDate(s) {
@@ -324,7 +368,8 @@ function validDate(s) {
 }
 
 /** 슬롯 하나에 대한 AI 항목을 검증 → { edit } | { hold } | { same } */
-function judge(item, slot, pageText) {
+export function judge(item, slot, page, ctx = {}) {
+  const pageText = cleanPage(page.text);
   if (!item) return { hold: '응답에 이 항목이 없음' };
   if (item.found !== true) return { hold: '페이지에서 해당 금리를 찾지 못했다고 응답' };
   if (!['high', 'medium', 'low'].includes(item.confidence)) return { hold: '신뢰도 값이 올바르지 않음' };
@@ -336,36 +381,71 @@ function judge(item, slot, pageText) {
   if (delta > Math.round(MAX_DELTA_PP * 100)) {
     return { hold: `기존 ${slot.oldR.toFixed(2)}% 대비 ${(delta / 100).toFixed(2)}%p 변동(허용 ±${MAX_DELTA_PP}%p 초과)` };
   }
-  if (item.is_base_rate !== true) return { hold: `기본 금리가 아닌 조건부·우대 금리로 보임${item.condition ? ' (' + item.condition + ')' : ''}` };
+  if (item.is_base_rate !== true) return { hold: `기본 금리가 아닌 조건부·우대 금리로 보임${item.condition ? ' ' + code(item.condition) : ''}` };
 
   const quote = String(item.evidence_quote || '').replace(/\s+/g, ' ').trim();
   if (quote.length < 6 || quote.length > 300) return { hold: '근거 문장 길이가 비정상' };
   if (!squash(pageText).includes(squash(quote))) return { hold: '근거 문장이 페이지 본문에 글자 그대로 없음' };
   if (!quoteHasRate(quote, rate)) return { hold: `근거 문장에 새 금리 ${rate.toFixed(2)} 가 들어 있지 않음` };
 
-  let date = String(item.effective_date || '').trim();
-  let dateNote = '';
-  if (date) {
-    if (!validDate(date)) return { hold: `적용일 "${date}" 형식이 올바르지 않음` };
-    const limit = new Date(Date.parse(TODAY + 'T00:00:00Z') + 30 * 86400000).toISOString().slice(0, 10);
-    if (date > limit) return { hold: `적용일 ${date} 이 오늘(${TODAY})보다 30일 넘게 미래` };
-    if (slot.oldD && validDate(slot.oldD) && date < slot.oldD && rate !== slot.oldR) {
-      return { hold: `적용일 ${date} 이 기존 적용일 ${slot.oldD} 보다 과거인데 금리가 다름(오래된 페이지 의심)` };
-    }
-  } else {
-    date = TODAY;
-    dateNote = `페이지에 적용일이 없어 확인일(${TODAY})로 넣었습니다 — 직접 확인 필요`;
+  // 같은 페이지에 섞인 다른 상품(일반RP·약정형·발행어음 등)의 값을 가져오지 않았는지
+  const specific = Boolean(ctx.productSpecificPage);
+  const pp = productProblem(quote, slot, specific);
+  if (pp) return { hold: pp };
+
+  // 금리가 바뀌는 수정이면 그 값이 이번에 새로 나타난 숫자여야 한다(옛 값·다른 칸의 값을 집지 못하게)
+  if (rate !== slot.oldR && Array.isArray(page.added) && !page.added.some(a => Math.abs(a - rate) < 0.005)) {
+    return { hold: `새 금리 ${rate.toFixed(2)} 가 이번에 새로 나타난 값 [${page.added.join(', ')}] 에 없음` };
   }
 
-  if (rate === slot.oldR && date === slot.oldD) return { same: true };
-  if (rate === slot.oldR && !item.effective_date) return { same: true };   // 값은 같고 날짜 정보도 없음
+  // 적용일: 근거 문장이나 본문에 실제로 적혀 있을 때만 쓴다. 없으면 기존 d 를 그대로 둔다.
+  const claimed = String(item.effective_date || '').trim();
+  let newD = '';
+  let dateNote = '';
+  if (claimed) {
+    if (!validDate(claimed)) return { hold: `적용일 ${code(claimed)} 형식이 올바르지 않음` };
+    if (textHasDate(quote, claimed) || textHasDate(pageText, claimed)) {
+      const limit = new Date(Date.parse(TODAY + 'T00:00:00Z') + 30 * 86400000).toISOString().slice(0, 10);
+      if (claimed > limit) return { hold: `적용일 ${claimed} 이 오늘(${TODAY})보다 30일 넘게 미래` };
+      // 적용일을 과거로 되돌리는 것은 금리가 같든 다르든 보류(오래된 페이지 의심)
+      if (slot.oldD && validDate(slot.oldD) && claimed < slot.oldD) {
+        return { hold: `적용일 ${claimed} 이 기존 적용일 ${slot.oldD} 보다 과거(오래된 페이지 의심)` };
+      }
+      newD = claimed;
+    } else {
+      dateNote = `적용일 미확인(감지일 ${TODAY}) — 응답의 적용일 ${code(claimed)} 은 본문에서 확인되지 않아 쓰지 않았습니다`;
+    }
+  } else {
+    dateNote = `적용일 미확인(감지일 ${TODAY})`;
+  }
+
+  // 금리가 같으면 적용일만 달라도 수정하지 않는다(시행일 표기·재공지 차이)
+  if (rate === slot.oldR) return { same: true, dateOnly: Boolean(newD && newD !== slot.oldD), newD, quote };
+  const kept = newD || slot.oldD;
   return {
     edit: {
       key: slot.key, broker: slot.broker, product: slot.product, name: slot.name,
-      oldR: slot.oldR, newR: rate, oldD: slot.oldD, newD: date, dateNote,
+      oldR: slot.oldR, newR: rate, oldD: slot.oldD, newD: kept, dateChanged: Boolean(newD && newD !== slot.oldD), dateNote,
+      top: slot.top, topCond: slot.topCond,
       condition: String(item.condition || '').trim(), quote, confidence: item.confidence,
     },
   };
+}
+
+/**
+ * 한 대상 안에서 두 슬롯이 같은 근거 문장을 쓰면(상품이 섞였을 가능성) 수정하려던 쪽을 보류로 바꾼다.
+ * judged: [{ slot, label, j }] — j 는 judge() 결과. 제자리에서 고친다.
+ */
+export function dedupeQuotes(judged) {
+  const qkey = (x) => { const q = x.j.edit?.quote ?? x.j.quote; return q ? squash(q) : ''; };
+  const keys = judged.map(qkey);   // 먼저 모두 계산(한쪽을 보류로 바꿔도 다른 쪽이 짝을 잃지 않게)
+  judged.forEach((x, i) => {
+    if (!x.j.edit) return;
+    const t = judged.findIndex((y, k) => k !== i && keys[k] && keys[k] === keys[i]);
+    const twin = t >= 0 ? judged[t] : null;
+    if (twin) x.j = { hold: `같은 대상의 ${twin.slot.name} ${PRODUCT[twin.slot.product]} 와 같은 근거 문장을 씀 — 상품이 섞였을 가능성` };
+  });
+  return judged;
 }
 
 /* ───────────── 본문(PR·댓글) ───────────── */
@@ -379,7 +459,8 @@ function prBody(edits, holds, urlOf, issue) {
   L.push('**자동 병합되지 않습니다.** 출처를 직접 열어 확인한 뒤에만 병합하세요.', '');
   L.push('| 항목 | 금리 | 적용일 | 신뢰도 |', '|---|---|---|---|');
   for (const e of edits) {
-    L.push(`| ${e.name} ${PRODUCT[e.product]} | ${pct(e.oldR)} → **${pct(e.newR)}** | ${e.oldD || '–'} → **${e.newD}** | ${e.confidence} |`);
+    const dcol = e.dateChanged ? `${e.oldD || '–'} → **${e.newD}**` : (e.dateNote ? `${e.oldD || '–'} (유지 · 적용일 미확인)` : `${e.oldD || '–'} (동일)`);
+    L.push(`| ${e.name} ${PRODUCT[e.product]} | ${pct(e.oldR)} → **${pct(e.newR)}** | ${dcol} | ${e.confidence} |`);
   }
   L.push('', '### 근거 (페이지 본문에서 글자 그대로 대조 확인됨)', '');
   for (const e of edits) {
@@ -395,6 +476,11 @@ function prBody(edits, holds, urlOf, issue) {
   L.push('', '### 검토 체크리스트', '');
   L.push('- [ ] 출처 페이지를 열어 금리와 적용일이 위 근거와 같은지 확인');
   L.push('- [ ] 적용 조건(한도·대상)이 기본 금리에 해당하는지 확인');
+  for (const e of edits) {
+    if (typeof e.top !== 'number') continue;
+    L.push(`- [ ] ${e.name} ${PRODUCT[e.product]}: 계산기에 우대 최고 \`top\` ${pct(e.top)}${e.topCond ? ' (' + code(e.topCond) + ')' : ''} 가 따로 있음 — 새 기본금리 ${pct(e.newR)} 와 어긋나지 않는지 확인`);
+    if (e.newR > e.top) L.push(`  - ⚠ 새 기본금리 ${pct(e.newR)} 가 우대 최고 ${pct(e.top)} 보다 높습니다 — \`top\`·\`topCond\` 갱신 필요(이 PR은 건드리지 않음)`);
+  }
   L.push('- [ ] 이 PR은 `r`(금리)·`d`(적용일)만 고쳤습니다. 같은 증권사의 MMW 순수익률, note·요약 문구, 상단 「데이터 확인 기준일」 배지, README 기준일 표는 직접 확인·수정');
   if (issue) L.push('', `관련 이슈: #${issue}`);
   L.push('', '🤖 Generated with [Claude Code](https://claude.com/claude-code)');
@@ -483,7 +569,11 @@ async function main() {
       const b = byId[bid];
       const o = b && b[product];
       if (!o || typeof o !== 'object' || typeof o.r !== 'number') continue;   // 해당 증권사에 그 상품이 없음
-      slots.push({ key: `${bid}.${product}`, broker: bid, product, name: b.n, oldR: o.r, oldD: typeof o.d === 'string' ? o.d : '' });
+      slots.push({
+        key: `${bid}.${product}`, broker: bid, product, name: b.n, oldR: o.r, oldD: typeof o.d === 'string' ? o.d : '',
+        cond: typeof o.c === 'string' ? o.c : '', note: typeof o.note === 'string' ? o.note : '',
+        top: typeof o.top === 'number' ? o.top : undefined, topCond: typeof o.topCond === 'string' ? o.topCond : '',
+      });
     }
     if (!slots.length) { log(`- ${page.label}: 계산기에 대응 항목이 없음`); continue; }
 
@@ -504,20 +594,25 @@ async function main() {
       if (!parsed || !Array.isArray(parsed.items)) throw new Error('응답 형식이 스키마와 다름');
       if (r.usage) log(`  사용량: 입력 ${r.usage.input_tokens} · 출력 ${r.usage.output_tokens}`);
     } catch (e) {
-      holds.push({ label: page.label, reason: String(e.message || e).slice(0, 200) });
+      holds.push({ label: page.label, reason: code(String(e.message || e).slice(0, 200)) });
       continue;
     }
 
-    for (const slot of slots) {
+    // 슬롯별 판정을 먼저 모두 내고, 같은 대상 안에서 두 슬롯이 같은 근거 문장을 쓴 것은 둘 다 보류한다
+    const productSpecific = slots.length === 1 && PRODUCT_KEYWORD[slots[0].product].test(page.label);
+    const judged = slots.map(slot => {
       const item = parsed.items.find(x => x && x.slot === slot.key);
-      const j = judge(item, slot, page.text || '');
-      const label = `${page.label} · ${slot.name} ${PRODUCT[slot.product]}`;
+      return { slot, label: `${page.label} · ${slot.name} ${PRODUCT[slot.product]}`, j: judge(item, slot, page, { productSpecificPage: productSpecific }) };
+    });
+    dedupeQuotes(judged);
+
+    for (const { slot, label, j } of judged) {
       if (j.hold) { holds.push({ label, reason: j.hold }); continue; }
-      if (j.same) { log(`  = ${label}: 계산기 값과 같음(수정 없음)`); continue; }
+      if (j.same) { log(`  = ${label}: 계산기 값과 같음(수정 없음${j.dateOnly ? ' · 적용일만 다름: ' + j.newD : ''})`); continue; }
       try {
-        patched = patchSlot(patched, slot.broker, slot.product, j.edit.newR, j.edit.newD);
+        patched = patchSlot(patched, slot.broker, slot.product, j.edit.newR, j.edit.dateChanged ? j.edit.newD : null);
       } catch (e) {
-        holds.push({ label, reason: `index.html 수정 위치를 찾지 못함: ${String(e.message).slice(0, 120)}` });
+        holds.push({ label, reason: `index.html 수정 위치를 찾지 못함: ${code(String(e.message).slice(0, 120))}` });
         continue;
       }
       edits.push(j.edit);
@@ -526,7 +621,7 @@ async function main() {
   }
 
   for (const h of holds) log(`  ✗ 보류 — ${h.label}: ${h.reason}`);
-  for (const e of edits) log(`  ✓ 수정 — ${e.name} ${PRODUCT[e.product]} ${pct(e.oldR)} → ${pct(e.newR)} (${e.oldD || '–'} → ${e.newD})`);
+  for (const e of edits) log(`  ✓ 수정 — ${e.name} ${PRODUCT[e.product]} ${pct(e.oldR)} → ${pct(e.newR)} (적용일 ${e.dateChanged ? (e.oldD || '–') + ' → ' + e.newD : (e.oldD || '–') + ' 유지'})`);
 
   const body = edits.length ? prBody(edits, holds, e => urlByKey[e.key], ISSUE) : '';
   const comment = holds.length ? holdComment(holds) : '';

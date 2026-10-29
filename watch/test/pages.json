@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-29 08:00 KST",
+  "pages": {
+    "bok_base_rate": { "label": "한국은행 기준금리", "url": "https://example.test/bok", "tier": 1, "added": [2.75], "removed": [2.5], "text": "기준금리 연 2.75% 2026-10-23 결정" },
+    "kis_bill": { "label": "한국투자증권 발행어음 변경이력", "url": "https://example.test/kis", "tier": 1, "added": [3.05], "removed": [], "text": "한국투자증권 발행어음 CMA 금리 변경이력 2026-10-20 적용 연 3.05% (세전, 31일 재투자) 이전 2026-09-04 적용 연 2.85%" },
+    "kb_cma": { "label": "KB증권 CMA 금리 JSON", "url": "https://example.test/kb", "tier": 1, "added": [2.55, 3.4], "removed": [2.5], "text": "KB증권 RP형 CMA 연 2.55% 기준일 2026-10-27 · 발행어음 CMA 연 3.40% (가입 1천만원 이하 한정 이벤트)" },
+    "hana_bill": { "label": "하나증권 발행어음", "url": "https://example.test/hana-bill", "tier": 1, "added": [3.1], "removed": [3.0], "text": "하나증권 발행어음 연 3.10% 2026-09-01 적용" },
+    "wooriib_rp": { "label": "우리투자증권 RP형 CMA", "url": "https://example.test/wooriib", "tier": 1, "added": [2.9], "removed": [2.85], "text": "우리투자증권 RP형 CMA 연 2.90% 세전 기준" },
+    "yuanta": { "label": "유안타증권 금리 데이터", "url": "https://example.test/yuanta", "tier": 1, "added": [12.5], "removed": [2.6], "text": "유안타증권 CMA RP 연 12.50% 2026-10-27" },
+    "hana": { "label": "하나증권 CMA (RP·MMW)", "url": "https://example.test/hana", "tier": 2, "added": [2.6], "removed": [2.55], "text": "하나증권 CMA RP 2.60% 적용일 2026-10-22 MMW 2.87%" },
+    "shinhan": { "label": "신한투자증권 CMA 실시간", "url": "https://example.test/shinhan", "tier": 2, "added": [2.6], "removed": [2.45], "text": "신한투자증권 CMA RP 연 2.60% (2026-10-26)" },
+    "sk": { "label": "SK증권 CMA 금리 API", "url": "https://example.test/sk", "tier": 2, "added": [5.1], "removed": [2.7], "text": "SK증권 CMA RP 연 5.10% 2026-10-27" },
+    "db": { "label": "DB증권 CMA 금리 API", "url": "https://example.test/db", "tier": 2, "added": [2.8], "removed": [2.75], "text": "DB증권 CMA RP 금리는 연 2.80% 이며 2026-10-27 부터 적용" },
+    "daishin": { "label": "대신증권 CMA", "url": "https://example.test/daishin", "tier": 2, "added": [2.85], "removed": [2.8], "text": "대신증권 CMA RP 연 2.85% 2026-10-27 적용" },
+    "ibk": { "label": "IBK투자증권 CMA 금리", "url": "https://example.test/ibk", "tier": 2, "added": [2.8], "removed": [2.75], "text": "IBK CMA RP 연 2.80% 2026-10-27" },
+    "sangsangin": { "label": "상상인증권 CMA", "url": "https://example.test/sangsangin", "tier": 2, "added": [0.5], "removed": [2.75], "text": "상상인증권 CMA 연 0.00% 2026-10-27" }
+  }
+}

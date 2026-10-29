@@ -8,6 +8,9 @@ archive/
 *.json
 !watch/targets.json
 !watch/baseline.json
+# watch/changed-pages.json (check.mjs 가 쓰는 AI 단계 입력)은 위 *.json 규칙으로 계속 제외
+# AI 단계 시험용 가짜 응답·페이지
+!watch/test/*.json
 
 # OS
 .DS_Store

@@ -8,7 +8,7 @@
  * 갱신되지 않은 값이 남아 있는 페이지, 배너와 금리표가 어긋나는 페이지가 실재하므로
  * 자동 갱신하면 틀린 숫자가 그대로 공개된다.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, unlinkSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import https from 'node:https';
@@ -21,12 +21,29 @@ const BASE_PATH = join(DIR, 'baseline.json');
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const TIMEOUT = 20000;
 
-/** 금리로 볼 수 있는 수치만 추출 */
-function fingerprint(text, mode) {
-  const plain = text
+/** 태그를 걷어낸 본문 */
+function stripTags(text) {
+  return text
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
+}
+
+/**
+ * AI 단계(ai-update.mjs)에 넘길 본문: 태그 제거 + 기본 엔티티 해제 + 공백 정리.
+ * AI가 되돌려 주는 근거 문장이 이 텍스트에 그대로 있는지 코드가 대조한다.
+ */
+function plainText(text) {
+  return stripTags(text)
+    .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#0?39;/g, "'").replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ').trim()
+    .slice(0, 400000);
+}
+
+/** 금리로 볼 수 있는 수치만 추출 */
+function fingerprint(text, mode) {
+  const plain = stripTags(text);
   const nums = plain.match(/(?<![\d.])[0-9]\.[0-9]{1,2}(?![\d])/g) || [];
   // 금리 범위 밖(0.5 미만, 8 초과)은 버전번호·비율 등 노이즈일 가능성이 커서 제외
   const rates = nums.map(Number).filter(n => n >= 0.5 && n <= 8);
@@ -64,7 +81,7 @@ async function grab(t) {
       let text;
       try { text = new TextDecoder(t.encoding || 'utf-8').decode(r.buf); }
       catch { text = r.buf.toString('utf8'); }
-      return { rates: fingerprint(text, t.mode), bytes: r.buf.length };
+      return { rates: fingerprint(text, t.mode), bytes: r.buf.length, plain: plainText(text) };
     }
     const res = await fetch(t.url, {
       method: t.method || 'GET',
@@ -96,7 +113,7 @@ async function grab(t) {
     let text;
     try { text = new TextDecoder(enc).decode(buf); }
     catch { text = buf.toString('utf8'); }
-    return { rates: fingerprint(text, t.mode), bytes: buf.length };
+    return { rates: fingerprint(text, t.mode), bytes: buf.length, plain: plainText(text) };
   } catch (e) {
     return { error: e.name === 'AbortError' ? '타임아웃' : String(e.message || e).slice(0, 120) };
   } finally {
@@ -112,6 +129,7 @@ const now = `${today} ${kst.toISOString().slice(11, 16)} KST`;
 const next = { checked_at: now, targets: {} };
 const changed = [];
 const errors = [];
+const pages = {};   // 변경된 대상의 본문 — ai-update.mjs 입력 (git에는 올리지 않음)
 
 /**
  * 일시적 실패 재시도.
@@ -150,6 +168,7 @@ for (const t of TARGETS) {
     const removed = prev.rates.filter(x => !b.has(x));
     if (added.length || removed.length) {
       changed.push({ ...t, added, removed });
+      pages[t.id] = { label: t.label, url: t.url, tier: t.tier, added, removed, text: r.plain || '' };
       console.log(`● ${t.label} — 변경 (+${added.join(',')} / -${removed.join(',')})`);
     } else {
       console.log(`· ${t.label} — 그대로`);
@@ -160,6 +179,9 @@ for (const t of TARGETS) {
 }
 
 writeFileSync(BASE_PATH, JSON.stringify(next, null, 2) + '\n', 'utf8');
+// 변경이 있을 때만 쓴다. 변경이 없으면 지난 실행의 파일이 남지 않게 지운다.
+if (changed.length) writeFileSync(join(DIR, 'changed-pages.json'), JSON.stringify({ checked_at: now, pages }) + '\n', 'utf8');
+else if (existsSync(join(DIR, 'changed-pages.json'))) unlinkSync(join(DIR, 'changed-pages.json'));
 
 /* ── 리포트 ── */
 const t1 = changed.filter(c => c.tier === 1);

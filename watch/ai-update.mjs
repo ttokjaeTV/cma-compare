@@ -361,7 +361,7 @@ export function textHasDate(text, ymd) {
 /* 상품 구분: 근거 문장에 슬롯의 상품 키워드가 있어야 하고, 다른 상품 키워드가 있으면 안 된다 */
 const PRODUCT_KEYWORD = { rp: /RP/i, bill: /발행어음/ };
 const OTHER_PRODUCT = {
-  rp:   /발행어음|MMW|MMF|일반\s*RP|국공채\s*RP|기간물|약정|종금|원\s*CMA|CMA\s*노트|종목\s*\d+/i,
+  rp:   /발행어음|MMW|MMF|일반\s*RP|국공채\s*RP|기간물|약정|종금|원\s*CMA|CMA\s*노트|종목\s*\d+|법인/i,
   bill: /RP|MMW|MMF|국공채|기간물|약정|종금|원\s*CMA|CMA\s*노트/i,
 };
 function productProblem(quote, slot, productSpecificPage) {

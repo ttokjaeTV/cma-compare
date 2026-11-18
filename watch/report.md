@@ -2,7 +2,7 @@
 
 | 대상 | 새로 생긴 값 | 사라진 값 |
 |---|---|---|
-| [SK증권 CMA 금리 API](https://www.sks.co.kr/main/product/rp/MAGIC_CMA_DATA_Q.cmd) | – | 3.42 |
+| [SK증권 CMA 금리 API](https://www.sks.co.kr/main/product/rp/MAGIC_CMA_DATA_Q.cmd) | 3.42 | – |
 
 > 숫자 지문 비교라 **오탐이 있을 수 있습니다.** 링크를 열어 실제 금리와 기준일을 직접 확인하세요.
 > 페이지 표시값이 최신이 아닌 경우가 있으니, 공지·고시로 교차 확인하세요. (상세는 로컬 갱신가이드 3장)

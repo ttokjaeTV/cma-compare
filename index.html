@@ -161,6 +161,8 @@ section h2 span{
 section > p.desc{font-size:15px;color:var(--ink-soft);margin-bottom:18px;max-width:900px}
 
 /* 표 */
+.scroll-hint { display: none; margin: 12px 0 -8px; text-align: center; font-size: 12px; font-weight: 700; color: var(--ink-mute); }
+@media (max-width: 710px) { .scroll-hint.sh-710 { display: block; } }
 .table-wrap{
   overflow-x:auto;background:var(--white);border:1px solid var(--border);
   border-radius:20px;padding:6px;
@@ -358,6 +360,7 @@ footer{
 <section id="main">
   <h2>종합 비교표<span>21개사</span></h2>
   <p class="desc">머리글을 누르면 정렬됩니다.<br>미고시·미확인 항목은 정렬 방향과 무관하게 항상 맨 아래로 내려가고, 순위 계산에서도 제외됩니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:16%"><col style="width:17%"><col style="width:19%"><col style="width:17%"><col style="width:16%"><col style="width:15%"></colgroup>
@@ -387,6 +390,7 @@ footer{
 <section id="types">
   <h2>CMA 5가지 유형<span>표가 헷갈리면 여기</span></h2>
   <p class="desc">CMA는 계좌 이름일 뿐이고, 실제로 돈이 어디에 들어가는지는 유형이 결정합니다.<br>금리만 비교하면 성격이 다른 상품을 나란히 놓게 됩니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:15%"><col style="width:40%"><col style="width:25%"><col style="width:20%"></colgroup>
@@ -419,6 +423,7 @@ footer{
 <section id="rp">
   <h2>RP형 CMA 상세<span>21개사</span></h2>
   <p class="desc">가장 보편적인 유형입니다.<br>증권사가 보유한 채권을 담보로 확정 약정금리를 지급하고, 일정 주기마다 자동 재투자됩니다.<br><strong>재투자 주기가 곧 금리 갱신 주기</strong>라서, 주기가 길수록 금리 변동 반영이 늦습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:17%"><col style="width:22%"><col style="width:24%"><col style="width:22%"><col style="width:15%"></colgroup>
@@ -441,6 +446,7 @@ footer{
 <section id="bill">
   <h2>발행어음형 CMA<span>인가사 9곳</span></h2>
   <p class="desc">증권사가 자기 신용으로 발행하는 어음입니다.<br>확정금리이고 RP형보다 대체로 높지만, <strong>담보가 없고 증권사 신용에 그대로 노출</strong>됩니다.<br>자기자본 4조원 이상 + 금융위 단기금융업 인가를 받은 회사만 취급할 수 있습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:18%"><col style="width:24%"><col style="width:14%"><col style="width:44%"></colgroup>
@@ -468,6 +474,7 @@ footer{
 <section id="mmw">
   <h2>MMW형 · MMF형<span>실적배당</span></h2>
   <p class="desc">둘 다 <strong>확정금리가 아닙니다.</strong><br>MMW형은 한국증권금융에 예치하는 투자일임(랩)이라 매 영업일 정산되는 일복리 구조입니다.<br>MMF형은 단기금융펀드라 기준가로 움직입니다.<br>그래서 상당수 증권사가 아예 수치를 고시하지 않습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:17%"><col style="width:23%"><col style="width:15%"><col style="width:15%"><col style="width:30%"></colgroup>
@@ -493,6 +500,7 @@ footer{
 <section id="jong">
   <h2>종금형 CMA<span>우리투자증권 단독</span></h2>
   <p class="desc"><strong>이 표에서 유일하게 예금자보호가 되는 CMA</strong>입니다.<br>종합금융회사 라이선스로 발행하는 어음이라 예금성 상품으로 분류되고, 공시 문구도 "이 <em>예금</em>은 예금자보호법에 따라…"로 시작합니다.<br>2024년 우리종합금융과 한국포스증권이 합병하며 우리투자증권으로 승계됐습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:18%"><col style="width:26%"><col style="width:15%"><col style="width:18%"><col style="width:23%"></colgroup>
@@ -512,6 +520,7 @@ footer{
 <section id="trap">
   <h2>금리에 한도가 붙은 경우<span>반드시 확인</span></h2>
   <p class="desc">광고에 나오는 숫자는 대부분 <strong>조건부 최고금리</strong>입니다.<br>한도를 넘으면 초과분만 낮아지는 게 아니라, 전액이 낮은 금리로 떨어지는 구조도 있습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:19%"><col style="width:13%"><col style="width:17%"><col style="width:21%"><col style="width:30%"></colgroup>
@@ -528,6 +537,7 @@ footer{
 <section id="fee">
   <h2>출금·이체 수수료 면제 조건</h2>
   <p class="desc">금리 0.1%p 차이보다 수수료가 더 클 수 있습니다.<br>500만원을 1년 넣어도 0.1%p면 5,000원인데, 이체수수료 500원을 월 2회만 내도 12,000원입니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:18%"><col style="width:82%"></colgroup>
@@ -544,6 +554,7 @@ footer{
 <section id="none">
   <h2>CMA를 취급하지 않는 증권사</h2>
   <p class="desc">거래량이 많은 증권사인데도 CMA가 아예 없는 곳이 있습니다.<br>대신 예수금에 이용료를 지급하는데, 이 구조가 CMA보다 유리한 경우도 있습니다.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:16%"><col style="width:29%"><col style="width:37%"><col style="width:18%"></colgroup>
@@ -563,6 +574,7 @@ footer{
 <section id="links">
   <h2>공식 확인 링크</h2>
   <p class="desc">금리는 수시로 바뀝니다.<br>실제 가입 전에는 반드시 각 사 공식 페이지에서 직접 확인하세요.</p>
+  <p class="scroll-hint sh-710" style="margin-bottom:8px" aria-hidden="true">← 옆으로 밀어 보세요 →</p>
   <div class="table-wrap">
     <table>
       <colgroup><col style="width:18%"><col style="width:82%"></colgroup>

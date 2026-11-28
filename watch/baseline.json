@@ -1,17 +1,17 @@
 {
-  "checked_at": "2026-11-27 13:46 KST",
+  "checked_at": "2026-11-28 13:30 KST",
   "targets": {
     "bok_base_rate": {
       "rates": [
         3.25
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "ksfc_rate": {
       "rates": [
         2.93
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "yuanta": {
       "rates": [
@@ -51,7 +51,7 @@
         3.75,
         3.8
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "kis_bill": {
       "rates": [
@@ -60,7 +60,7 @@
         2.6,
         2.85
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "hana_bill": {
       "rates": [
@@ -74,22 +74,22 @@
         4.2,
         4.65
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "kb_cma": {
       "rates": [
-        2.5,
-        2.6,
-        2.8
+        2.75,
+        2.85,
+        3.05
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "wooriib_rp": {
       "rates": [
         2.85,
         2.9
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "hana": {
       "rates": [
@@ -97,7 +97,7 @@
         3.05,
         3.12
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "shinhan": {
       "rates": [
@@ -106,7 +106,7 @@
         3.05,
         3.12
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "sk": {
       "rates": [
@@ -115,7 +115,7 @@
         3.05,
         3.15
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "db": {
       "rates": [
@@ -141,7 +141,7 @@
         3,
         4.8
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "wooriib_woncma": {
       "rates": [
@@ -149,7 +149,7 @@
         3,
         3.75
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     },
     "wooriib_cmanote": {
       "rates": [
@@ -160,7 +160,7 @@
         3.6,
         3.7
       ],
-      "checked_at": "2026-11-27 13:46 KST"
+      "checked_at": "2026-11-28 13:30 KST"
     }
   }
 }
